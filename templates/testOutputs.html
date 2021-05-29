@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type=text/javascript>
+			$(function() {
+			  $('input#submitOutput').bind('click', function() {
+				$.getJSON('/background_process_testOutputs', {
+				  output: $("#outputBox").val(),
+				}, function(data) {
+				  $("#result").text(data.result);
+				});
+				return false;
+			  });
+			});
+		</script>
+{% endblock %}
+
+{% block options %}
+    <option value = "writeCode" >write code</option>
+    <option value = "testInputs">test inputs</option>
+    <option value = "testOutputs" selected>test outputs</option> 
+{% endblock %}
+
+{% block content %}
+	<p>what is a possible input for sum13 that would give us 9 as an output?</p>
+    <form>
+        <input type="text" name = "outputBox" id = "outputBox" />
+        <input id = "submitOutput" type = "submit" value="submit" />
+    </form>
+{% endblock %}
+
+{% block answers %}
+    <p id = "result"></p>
+{% endblock %}

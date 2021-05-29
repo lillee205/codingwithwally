@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Coding With Wally</title>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel = "stylesheet" href= "{{url_for('static', filename = 'css/index.css')}}"
+
+</head>
+<body>
+    <h1>coding with wally</h1>
+    {% block head %}{% endblock %}
+
+    <p> 
+        Return the sum of the numbers in the array, returning 0 for an empty array. Except the number 13 is very unlucky, so it does not count and numbers that come immediately after a 13 also do not count.
+        <br>
+        <br>
+        sum13([1, 2, 2, 1]) → 6
+        <br>
+        sum13([1, 1]) → 2
+        <br>
+        sum13([1, 2, 2, 1, 13]) → 6
+    </p>
+    <form action = "{{ url_for('change_type') }}"  method = "post">
+        <select onchange= "this.form.submit()" name = "formChangeType">
+            {% block options %}
+            <option value = "writeCode">write code</option>
+            <option value = "testInputs">test inputs</option>
+            <option value = "testOutputs">test outputs</option> 
+            {% endblock %}
+        </select>
+    </form>
+        <br>
+        {% block content %}{% endblock %}
+    </form>
+        {% block answers %}{% endblock %}
+    
+</body>
+</html>

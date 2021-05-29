@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type=text/javascript>
+			$(function() {
+			  $('input#submitInput').bind('click', function() {
+				$.getJSON('/background_process_testInputs', {
+				  input: $("#inputBox").val(),
+				}, function(data) {
+				  $("#result").text(data.result);
+				});
+				return false;
+			  });
+			});
+		</script>
+{% endblock %}
+
+{% block options %}
+    <option value = "writeCode" >write code</option>
+    <option value = "testInputs" selected>test inputs</option>
+    <option value = "testOutputs" >test outputs</option> 
+{% endblock %}
+
+{% block content %}
+    <form>
+        <input type="text" name = "inputBox" id = "inputBox" />
+        <input id = "submitInput" type = "submit" value="submit" />
+    </form>
+{% endblock %}
+
+{% block answers %}
+    <p id = "result"></p>
+{% endblock %}

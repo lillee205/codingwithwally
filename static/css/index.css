@@ -1,0 +1,9 @@
+head {
+    display: none;
+}
+
+#codeBox {
+    height: 50vh;
+    width: 80vw;
+}
+
