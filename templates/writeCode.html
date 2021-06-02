@@ -10,7 +10,7 @@
 		$.getJSON('/background_process_writeCode', {
 			code: ace.edit("jsEditor").getValue(),
 		}, function(data) {
-			if (data.result.startsWith("Error")){
+			if (typeof data.result == "string"){
 				$("#result").text(data.result)
 			}
 			else{
