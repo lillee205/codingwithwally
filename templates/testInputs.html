@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block head %}
+<script defer type = "text/javascript" src="{{ url_for('static', filename = 'js/select.js') }}"></script>
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script type=text/javascript>
 			$(function() {
@@ -17,6 +19,7 @@
 {% endblock %}
 
 {% block options %}
+	<option value = "selectOption">select option</option>
     <option value = "writeCode" >write code</option>
     <option value = "testInputs" selected>test inputs</option>
     <option value = "testOutputs" >test outputs</option> 
@@ -25,7 +28,7 @@
 {% block content %}
     <form>
         <input type="text" name = "inputBox" id = "inputBox" />
-        <input id = "submitInput" type = "submit" value="submit" />
+        <input class = "submitbtn" id = "submitInput" type = "submit" value="submit" />
     </form>
 {% endblock %}
 

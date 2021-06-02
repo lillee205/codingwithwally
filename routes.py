@@ -19,39 +19,40 @@ def background_process_writeCode():
     [1,2,2,1,13]
     ]
     correctAns, testAns = pcode.checkAnswers(code, pcode.correctFunc, testInputs)
-    return jsonify(result = "the correct ans is {} and you had {}".format(correctAns, testAns))
+    return jsonify(result = [correctAns, testAns])
   except Exception as e: 
-    return jsonify(result = "there was an error. " + str(e))
+    return jsonify(result = "Error: " + str(e))
 
 
 @app.route('/background_process_testInputs')
 def background_process_testInputs():
   input = eval(request.args.get('input'))
   ans = pcode.correctFunc(input)
-  return jsonify(result = "the answer is " + str(ans))
+  return jsonify(result = "The answer is " + str(ans))
 
 @app.route('/background_process_testOutputs')
 def background_process_testOutputs():
   output = eval(request.args.get('output'))
   ans = pcode.correctFunc(output)
   if ans == 9:
-    return jsonify(result = "correct, an input of " + str(output) + " works")
+    return jsonify(result = "Correct, an input of " + str(output) + " works")
   else:
-    return jsonify(result = "incorrect, an input of {} gives you an output of {}".format(str(output), ans) )
+    return jsonify(result = "Incorrect, an input of {} gives you an output of {}".format(str(output), ans) )
 
 
-@app.route('/change_type', methods = ["POST"])
+@app.route('/change_type', methods = ["POST", "GET"])
 def change_type():
   if request.method == "POST":
-    newView = request.form.get("formChangeType")
-    if newView == "testInputs":
+    newView = request.form.to_dict()['hiddenSelect']
+    if newView == "test inputs":
       return render_template('testInputs.html')
-    elif newView == "writeCode":
+    elif newView == "write code":
       return render_template("writeCode.html")
-    elif newView == "testOutputs:":
+    elif newView == "test outputs":
       return render_template("testOutputs.html")
     else:
-      return render_template("testOutputs.html")
+      return render_template("writeCode.html")
+
 if __name__ == "__main__":
     app.run(debug = True)
 

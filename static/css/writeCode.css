@@ -1,0 +1,19 @@
+
+
+.ace_editor {
+    overflow: visible;
+    font-family: monospace;
+}
+#jsEditor { 
+    border: 0.2em black solid;
+    height: 50vh;
+    width: 95%;
+    font-family : monospace !important;
+    font-size: 16px !important;
+    direction:ltr !important;
+    text-align:left !important;
+}
+
+#submitCode{
+    margin-top: 1.2em;
+}

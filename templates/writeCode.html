@@ -1,22 +1,35 @@
 {% extends "base.html" %}
 
 {% block head %}
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script type=text/javascript>
-			$(function() {
-			  $('input#submitCode').bind('click', function() {
-				$.getJSON('/background_process_writeCode', {
-				  code: $("#codeBox").val(),
-				}, function(data) {
-				  $("#result").text(data.result);
-				});
-				return false;
-			  });
-			});
-		</script>
+<link rel = "stylesheet" href= "{{ url_for('static', filename = 'css/writeCode.css') }}">
+<script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+<script defer type = "text/javascript" src="{{ url_for('static', filename = 'js/select.js') }}"></script>
+<script type=text/javascript>
+	$(function() {
+		$('input#submitCode').bind('click', function() {
+		$.getJSON('/background_process_writeCode', {
+			code: ace.edit("jsEditor").getValue(),
+		}, function(data) {
+			if (data.result.startsWith("Error")){
+				$("#result").text(data.result)
+			}
+			else{
+				yourAnswers = data.result[1]
+				$("#result1").text(yourAnswers[0]);
+				$("#result2").text(yourAnswers[1]);
+				$("#result3").text(yourAnswers[2]);
+			}
+
+
+		});
+		return false;
+		});
+	});
+</script>
 {% endblock %}
 
 {% block options %}
+	<option value = "selectOption">select option</option>
     <option value = "writeCode" selected>write code</option>
     <option value = "testInputs">test inputs</option>
     <option value = "testOutputs">test outputs</option> 
@@ -24,13 +37,40 @@
 
 {% block content %}
     <form>
-        <textarea name = "codeBox" id = "codeBox" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}">def sum13(nums):</textarea>
-        <input id = "submitCode" type = "submit" value="submit" />
+        <div id = "jsEditor">def sum13(nums):
+		</div>
+		<script type = "text/javascript">
+			var editor = ace.edit("jsEditor");
+			editor.setTheme("ace/theme/monokai");
+			editor.session.setMode("ace/mode/python");
+		</script>
+		<input class = "submitbtn" id = "submitCode" type = "submit" value="submit" />
     </form>
 {% endblock %}
 
 {% block answers %}
-    <p id = "result"></p>
+	<table>
+		<tr>
+			<th>test case</th>
+			<th>output</th>
+			<th>expected output</th>
+		</tr>
+		<tr>
+			<td>[1, 2, 2, 1]</td>
+			<td id = "result1"></td>
+			<td>6</td>
+		</tr>
+		<tr>
+			<td>[1, 1]</td>
+			<td id = "result2"></td>
+			<td>2</td>
+		</tr>
+		<tr>
+			<td>[1, 2, 2, 1, 13]</td>
+			<td id = "result3"></td>
+			<td>6</td>
+		</tr>
+	</table>
+    <p id = "result" style = "color:white"></p>
 {% endblock %}
-
 
