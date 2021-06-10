@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>coding with wally</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/index.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/misc.css') }}">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+        $(function() {
+            $(".flexchild").bind('click', function() {
+                console.log($(this).children[0])
+                f = $(this)
+                this.value = $(this).children()[0].innerText;
+                $('input#hiddenChoose').val(this.value);
+                console.log($('input#hiddenChoose').val())
+                $("#chooseForm").submit()
+          });
+        });
+    </script>
+</head>
+
+<body class = "noselect">
+    <div class="triangle">
+
+        <h1 class = "animate fadeInDown one">CODING WITH WALLY</h1>
+        <p class = "animate fadeInDown one" style="width: 80%; margin: auto;">for all your coding needs!</p>
+        <div id="tags" class = "animate fadeInDown one">
+            <div class="tag hvr-grow" >python</div>
+            <div class="tag hvr-grow">java</div>
+            <div class="tag hvr-grow">easy</div>
+            <div class="tag hvr-grow">medium</div>
+            <div class="tag hvr-grow">hard</div>
+            <div class="tag hvr-grow">strings</div>
+            <div class="tag hvr-grow">booleans</div>
+            <div class="tag hvr-grow">arrays</div>
+            <div class="tag hvr-grow">recursion</div>
+            <div class="tag hvr-grow">higher-order functions</div>
+        </div>
+        <div id="flex" class = "animate fadeInDown one">
+            <div class="flexchild">
+                <h4>sum13</h4>
+                <div id="tagsSmallFlex">
+                    <div data-value="python" class="tagsSmall">python</div>
+                    <div data-value="easy" class="tagsSmall">easy</div>
+                    <div data-value="arrays" class="tagsSmall">arrays</div>
+
+                </div>
+            </div>
+            <div class="flexchild">
+                <h4>fold</h4>
+                <div id="tagsSmallFlex">
+                    <div data-value="python" class="tagsSmall">python</div>
+                    <div data-value="higher-order functions" class="tagsSmall">higher-order functions</div>
+                    <div data-value="recursion" class="tagsSmall">recursion</div>
+                    <div data-value="strings" class="tagsSmall">strings</div>
+                    <div data-value="hard" class="tagsSmall">hard</div>
+                </div>
+            </div>
+            <div class="flexchild">
+                <h4>monkey</h4>
+            </div>
+            <div class="flexchild">
+                <h4>monkey</h4>
+            </div>
+            <div class="flexchild">
+                <h4>monkey</h4>
+            </div>
+            <div class="flexchild">
+                <h4>monkey</h4>
+            </div>
+
+        </div>
+        <form name="chooseForm" id="chooseForm" action="{{ url_for('index') }}" method="post"
+            style="display: inline-block;">
+            <input type="hidden" id="hiddenChoose" name="hiddenChoose" value="" />
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            $(".tag").click(function () { // filtering system
+
+                var val = $(this)[0].innerText //gets tag name
+
+                var currTag = $(this)
+                var currentColor = currTag.css("background-color")
+                var newColor = ""
+
+                if (currentColor == "rgb(220, 37, 106)"){
+                    newColor =  "rgb(255, 181, 49)"
+                }
+                else{
+                    newColor = "rgb(220, 37, 106)"
+                }
+
+                $("[data-value='" + val + "']").each(function () {
+                    currDiv = $(this).parent().parent()
+
+                    if (newColor == "rgb(255, 181, 49)") {
+                        currDiv.hide()
+                    }
+                    else {
+                        currDiv.show()
+                    }
+                })
+                currTag.css('background-color', newColor);
+
+            })
+        })
+    </script>
+</body>
+
+</html>

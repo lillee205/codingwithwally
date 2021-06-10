@@ -5,18 +5,28 @@
     <title>Coding With Wally</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/select.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/misc.css') }}">
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <script defer src="{{ url_for('static', filename = 'js/helper.js') }}"></script>
+    <script defer type="text/javascript" src="{{ url_for('static', filename = 'js/select.js') }}"></script>
     <script type=text/javascript>
         $(function() {
+
+            $("#rand").bind("click", function() {
+                $('input#hiddenSelect').val("rand");
+                $("#selectForm").submit()
+            })
             $(".select-items div").bind('click', function() {
                 document.getElementById("hiddenSelect").value = $(this)[0].innerHTML;
                 $('input#hiddenSelect').val($(this)[0].innerHTML);
                 $("#selectForm").submit()
-                
-          });
+            });
         });
     </script>
 </head>
@@ -25,39 +35,33 @@
 
     {% block head %}{% endblock %}
 
-    <div id="sidebar" class = "noselect">
-        <a href="#">home</a>
-        <a href="#">random problem</a>
-        <a href="#">help</a>
+    <div id="sidebar" class="noselect">
+        <a href = "/" id="home">home</a>
+        <a id="rand">random problem</a>
+        <a>help</a>
     </div>
 
     <div id="main">
-        <div id="header" class = "noselect">
+
+        <div id="header" class="noselect">
             <h1>CODING WITH WALLY</h1>
-            <h3>sum13</h3>
-            <form name="selectForm" id = "selectForm" action="{{ url_for('change_type') }}" method="post" style="display: inline-block;">
-                <input type="hidden" id="hiddenSelect" name="hiddenSelect" value = "ma"/>
+            <h3>{{function_name}}</h3>
+            <form name="selectForm" id="selectForm" action="{{ url_for('change_type') }}" method="post"
+                style="display: inline-block;">
+                <input type="hidden" id="hiddenSelect" name="hiddenSelect" value="" />
             </form>
-                <div class="custom-select">
-                    <select>
-                        {% block options %}
-                        {% endblock %}
-                    </select>
-                </div>
+            <div class="custom-select">
+                <select>
+                    {% block options %}
+                    {% endblock %}
+                </select>
+            </div>
         </div>
-        <div style="width:60%;">
-            <p>
-                Return the sum of the numbers in the array, returning 0 for an empty array. Except the number 13 is very
-                unlucky, so it does not count and numbers that come immediately after a 13 also do not count.
-                <br>
-                <br>
-                sum13([1, 2, 2, 1]) → 6
-                <br>
-                sum13([1, 1]) → 2
-                <br>
-                sum13([1, 2, 2, 1, 13]) → 6
-            </p>
+
+        <div style="width:60%;height:22vh;padding-right:1.5em;overflow-y: scroll;">
+            <p>{{description}}</p>
         </div>
+
         <div id="flexbox">
             <div class="flexchild" id="leftcontent">
                 {% block content %}{% endblock %}
@@ -67,6 +71,7 @@
                 {% block answers %}{% endblock %}
             </div>
         </div>
+        
     </div>
 
 </body>

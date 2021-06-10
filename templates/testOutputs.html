@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block head %}
-<script defer type = "text/javascript" src="{{ url_for('static', filename = 'js/select.js') }}"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type=text/javascript>
 	$(function() {
@@ -25,7 +24,7 @@
 {% endblock %}
 
 {% block content %}
-	<p>What is a possible input for sum13 that would give us 9 as an output?</p>
+	<p>What is a possible input for {{func_call}} that would give us 9 as an output?</p>
     <form>
         <input type="text" name = "outputBox" id = "outputBox" />
         <input class = "submitbtn" id = "submitOutput" type = "submit" value="submit" />

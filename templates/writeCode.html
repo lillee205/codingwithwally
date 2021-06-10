@@ -1,25 +1,29 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link rel = "stylesheet" href= "{{ url_for('static', filename = 'css/writeCode.css') }}">
-<script type = "text/javascript" src = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
-<script defer type = "text/javascript" src="{{ url_for('static', filename = 'js/select.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/writeCode.css') }}">
 <script type=text/javascript>
 	$(function() {
 		$('input#submitCode').bind('click', function() {
+			m = reformat("{{tests}}")
 		$.getJSON('/background_process_writeCode', {
 			code: ace.edit("jsEditor").getValue(),
+			problem: "{{function_name}}",
+			inputs: reformat("{{tests}}"),
 		}, function(data) {
-			if (typeof data.result == "string"){
+			if (typeof data.result == "string" && data.result.startsWith("Error")){
 				$("#result").text(data.result)
+				$( ".output" ).each(function (index){
+					$(this).text("")
+				})
 			}
 			else{
-				yourAnswers = data.result[1]
-				$("#result1").text(yourAnswers[0]);
-				$("#result2").text(yourAnswers[1]);
-				$("#result3").text(yourAnswers[2]);
+				yourAnswers = data.result
+				$( ".output" ).each(function (index){
+					$(this).text(yourAnswers[index])
+				})
+				$("#result").text("")
 			}
-
 
 		});
 		return false;
@@ -29,48 +33,43 @@
 {% endblock %}
 
 {% block options %}
-	<option value = "selectOption">select option</option>
-    <option value = "writeCode" selected>write code</option>
-    <option value = "testInputs">test inputs</option>
-    <option value = "testOutputs">test outputs</option> 
+<option value="selectOption">select option</option>
+<option value="writeCode" selected>write code</option>
+<option value="testInputs">test inputs</option>
+<option value="testOutputs">test outputs</option>
 {% endblock %}
 
 {% block content %}
-    <form>
-        <div id = "jsEditor">def sum13(nums):
-		</div>
-		<script type = "text/javascript">
-			var editor = ace.edit("jsEditor");
-			editor.setTheme("ace/theme/monokai");
-			editor.session.setMode("ace/mode/python");
-		</script>
-		<input class = "submitbtn" id = "submitCode" type = "submit" value="submit" />
-    </form>
+<form>
+	<div id="jsEditor">def {{func_call}}:
+	</div>
+	<script type="text/javascript">
+		var editor = ace.edit("jsEditor");
+		editor.setTheme("ace/theme/monokai");
+		editor.session.setMode("ace/mode/python");
+	</script>
+	<input class="submitbtn" id="submitCode" type="submit" value="submit" />
+</form>
 {% endblock %}
 
 {% block answers %}
-	<table>
-		<tr>
-			<th>test case</th>
-			<th>output</th>
-			<th>expected output</th>
-		</tr>
-		<tr>
-			<td>[1, 2, 2, 1]</td>
-			<td id = "result1"></td>
-			<td>6</td>
-		</tr>
-		<tr>
-			<td>[1, 1]</td>
-			<td id = "result2"></td>
-			<td>2</td>
-		</tr>
-		<tr>
-			<td>[1, 2, 2, 1, 13]</td>
-			<td id = "result3"></td>
-			<td>6</td>
-		</tr>
-	</table>
-    <p id = "result" style = "color:white"></p>
+<table>
+	<tr>
+		<th>test case</th>
+		<th>output</th>
+		<th>expected output</th>
+	</tr>
+	{%for i in range(tests|length)%}
+	<tr>
+		{% if tests[i] is string %}
+			<td>"{{tests[i]}}"</td>
+		{% else %}
+			<td>{{tests[i]}}</td>
+		{% endif %}
+		<td class="output"></td>
+		<td>{{ansKey[i]}}</td>
+	</tr>
+	{% endfor %}
+</table>
+<p id="result" style="color:white"></p>
 {% endblock %}
-

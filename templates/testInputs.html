@@ -1,37 +1,148 @@
 {% extends "base.html" %}
 
 {% block head %}
-<script defer type = "text/javascript" src="{{ url_for('static', filename = 'js/select.js') }}"></script>
-
+<link rel="stylesheet" href="{{ url_for('static', filename = 'css/writeCode.css') }}">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script type=text/javascript>
-			$(function() {
-			  $('input#submitInput').bind('click', function() {
-				$.getJSON('/background_process_testInputs', {
-				  input: $("#inputBox").val(),
-				}, function(data) {
-				  $("#result").text(data.result);
-				});
-				return false;
-			  });
-			});
-		</script>
+<script type=text/javascript>
+	$(function() {
+		$('.output').bind('keypress', function(e){
+			m = $(this).children()[0].value
+		if(e.which == 13){
+			rowEl = ($(this).parent().children())
+			$.getJSON('/background_process_testInputs', {
+				output: $(this).children()[0].value,
+				input: JSON.stringify(rowEl[0].innerText),
+		}, function(data) {
+			res = data.result 
+			if (res == "true"){
+				rowEl[2].innerText = "O"
+			}
+			else if (res == "false"){
+				rowEl[2].innerText = "X"
+			}
+			else{
+				rowEl[2].innerText = "Error"
+			}
+		});
+		return false;
+		}
+		});
+	});
+	</script>
 {% endblock %}
 
 {% block options %}
-	<option value = "selectOption">select option</option>
-    <option value = "writeCode" >write code</option>
-    <option value = "testInputs" selected>test inputs</option>
-    <option value = "testOutputs" >test outputs</option> 
+<option value="selectOption">select option</option>
+<option value="writeCode">write code</option>
+<option value="testInputs" selected>test inputs</option>
+<option value="testOutputs">test outputs</option>
 {% endblock %}
 
 {% block content %}
-    <form>
-        <input type="text" name = "inputBox" id = "inputBox" />
-        <input class = "submitbtn" id = "submitInput" type = "submit" value="submit" />
-    </form>
+<div id="jsEditor" style="filter:blur(4px)">According to all known laws
+	of aviation,
+
+
+	there is no way a bee
+	should be able to fly.
+
+
+	Its wings are too small to get
+	its fat little body off the ground.
+
+
+	The bee, of course, flies anyway
+
+
+	because bees don't care
+	what humans think is impossible.
+
+
+	Yellow, black. Yellow, black.
+	Yellow, black. Yellow, black.
+
+
+	Ooh, black and yellow!
+	Let's shake it up a little.
+
+
+	Barry! Breakfast is ready!
+
+
+	Ooming!
+
+
+	Hang on a second.
+
+
+	Hello?
+
+
+	- Barry?
+	- Adam?
+
+
+	- Oan you believe this is happening?
+	- I can't. I'll pick you up.
+
+
+	Looking sharp.
+
+
+	Use the stairs. Your father
+	paid good money for those.
+
+
+	Sorry. I'm excited.
+
+
+	Here's the graduate.
+	We're very proud of you, son.
+
+
+	A perfect report card, all B's.
+
+
+	Very proud.
+
+
+	Ma! I got a thing going here.
+
+
+	- You got lint on your fuzz.
+	- Ow! That's me!
+
+
+	- Wave to us! We'll be in row 118,000.
+	- Bye!
+	:
+</div>
+<script type="text/javascript">
+	var editor = ace.edit("jsEditor");
+	editor.setTheme("ace/theme/monokai");
+	editor.setReadOnly(true);
+</script>
 {% endblock %}
 
 {% block answers %}
-    <p id = "result"></p>
+<table>
+	<tr>
+		<th>test case</th>
+		<th>output</th>
+		<th>correct</th>
+	</tr>
+	{%for i in range(tests|length)%}
+	<tr>
+		{% if tests[i] is string %}
+			<td>"{{tests[i]}}"</td>
+		{% else %}
+			<td>{{tests[i]}}</td>
+		{% endif %}
+		<td class="output">
+			<input value = "" type="text" style="margin-right: 0;" />
+		</td>
+		<td class="check"></td>
+	</tr>
+	{% endfor %}
+</table>
 {% endblock %}
