@@ -11,7 +11,7 @@
 			rowEl = ($(this).parent().children())
 			$.getJSON('/background_process_testInputs', {
 				output: $(this).children()[0].value,
-				input: JSON.stringify(rowEl[0].innerText),
+				input: rowEl[0].innerText,
 		}, function(data) {
 			res = data.result 
 			if (res == "true"){

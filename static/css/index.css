@@ -1,5 +1,4 @@
-html,
-body {
+html, body {
     font-family: "Verdana", sans-serif;
     height: 100%;
     background-color: rgb(39, 40, 34);
@@ -22,7 +21,6 @@ h4 {
     margin-top: 0.3em;
 }
 
-
 /* filtering system */
 
 #tags {
@@ -40,7 +38,7 @@ h4 {
 
 .tag {
     display: inline-block;
-    background-color: #dc256a;
+    background-color: rgb(220, 37, 106);
     margin: 1em;
     padding: 0.5em 2em;
     border-radius: 5px;
@@ -49,7 +47,6 @@ h4 {
 .tag:hover {
     cursor: pointer;
 }
-
 
 /* flex box containing problems */
 
@@ -83,6 +80,14 @@ h4 {
     transition: background-color 0.2s ease-in;
 }
 
+a:visited {
+    text-decoration: none;
+}
+
+a:-webkit-any-link {
+    color: white;
+    text-decoration: none;
+}
 
 /* tags in each problem */
 

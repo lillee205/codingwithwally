@@ -17,14 +17,13 @@
     <script defer type="text/javascript" src="{{ url_for('static', filename = 'js/select.js') }}"></script>
     <script type=text/javascript>
         $(function() {
-
             $("#rand").bind("click", function() {
                 $('input#hiddenSelect').val("rand");
                 $("#selectForm").submit()
             })
             $(".select-items div").bind('click', function() {
-                document.getElementById("hiddenSelect").value = $(this)[0].innerHTML;
                 $('input#hiddenSelect').val($(this)[0].innerHTML);
+                console.log($('input#hiddenSelect').val())
                 $("#selectForm").submit()
             });
         });
@@ -46,7 +45,7 @@
         <div id="header" class="noselect">
             <h1>CODING WITH WALLY</h1>
             <h3>{{function_name}}</h3>
-            <form name="selectForm" id="selectForm" action="{{ url_for('change_type') }}" method="post"
+            <form name="selectForm" id="selectForm" action="{{ url_for('change_type', problem_pg = function_name) }}" method="post"
                 style="display: inline-block;">
                 <input type="hidden" id="hiddenSelect" name="hiddenSelect" value="" />
             </form>

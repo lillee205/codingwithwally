@@ -9,72 +9,40 @@
 
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/index.css') }}">
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/misc.css') }}">
-
+    <link rel="icon" href="https://cdn.discordapp.com/attachments/574052228206297090/852681325315096587/AAA.png">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type=text/javascript>
-        $(function() {
-            $(".flexchild").bind('click', function() {
-                console.log($(this).children[0])
-                f = $(this)
-                this.value = $(this).children()[0].innerText;
-                $('input#hiddenChoose').val(this.value);
-                console.log($('input#hiddenChoose').val())
-                $("#chooseForm").submit()
-          });
-        });
-    </script>
+
 </head>
 
-<body class = "noselect">
+<body class="noselect">
     <div class="triangle">
 
-        <h1 class = "animate fadeInDown one">CODING WITH WALLY</h1>
-        <p class = "animate fadeInDown one" style="width: 80%; margin: auto;">for all your coding needs!</p>
-        <div id="tags" class = "animate fadeInDown one">
-            <div class="tag hvr-grow" >python</div>
-            <div class="tag hvr-grow">java</div>
-            <div class="tag hvr-grow">easy</div>
-            <div class="tag hvr-grow">medium</div>
-            <div class="tag hvr-grow">hard</div>
-            <div class="tag hvr-grow">strings</div>
-            <div class="tag hvr-grow">booleans</div>
-            <div class="tag hvr-grow">arrays</div>
-            <div class="tag hvr-grow">recursion</div>
-            <div class="tag hvr-grow">higher-order functions</div>
+        <h1 class="animate fadeInDown one">CODING WITH WALLY</h1>
+        <p class="animate fadeInDown one" style="width: 80%; margin: auto;">for all your coding needs!</p>
+        <div id="tags" class="animate fadeInDown one">
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">python</div>
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">java</div>
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">easy</div>
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">medium</div>
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">hard</div>
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">strings</div>
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">booleans</div>
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">arrays</div>
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">recursion</div>
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">higher-order functions</div>
         </div>
-        <div id="flex" class = "animate fadeInDown one">
-            <div class="flexchild">
-                <h4>sum13</h4>
+        <div id="flex" class="animate fadeInDown one">
+            {% for key, value in problems.items() %}
+            <a href="/{{key}}" class="flexchild">
+                <h4>{{key}}</h4>
                 <div id="tagsSmallFlex">
-                    <div data-value="python" class="tagsSmall">python</div>
-                    <div data-value="easy" class="tagsSmall">easy</div>
-                    <div data-value="arrays" class="tagsSmall">arrays</div>
-
+                    {% for tag in problems[key]['tags'] %}
+                    <div data-value="{{tag}}" class="tagsSmall">{{tag}}</div>
+                    {% endfor %}
                 </div>
-            </div>
-            <div class="flexchild">
-                <h4>fold</h4>
-                <div id="tagsSmallFlex">
-                    <div data-value="python" class="tagsSmall">python</div>
-                    <div data-value="higher-order functions" class="tagsSmall">higher-order functions</div>
-                    <div data-value="recursion" class="tagsSmall">recursion</div>
-                    <div data-value="strings" class="tagsSmall">strings</div>
-                    <div data-value="hard" class="tagsSmall">hard</div>
-                </div>
-            </div>
-            <div class="flexchild">
-                <h4>monkey</h4>
-            </div>
-            <div class="flexchild">
-                <h4>monkey</h4>
-            </div>
-            <div class="flexchild">
-                <h4>monkey</h4>
-            </div>
-            <div class="flexchild">
-                <h4>monkey</h4>
-            </div>
-
+            </a>
+            {% endfor %}
+            <p id="nothing" style="display: none;">nothing was found except for the infinite expanse of the void.</p>
         </div>
         <form name="chooseForm" id="chooseForm" action="{{ url_for('index') }}" method="post"
             style="display: inline-block;">
@@ -84,32 +52,49 @@
 
     <script type="text/javascript">
         $(function () {
+            var yellow = "rgb(255, 181, 49)"
+            var pink = "rgb(220, 37, 106)"
             $(".tag").click(function () { // filtering system
 
                 var val = $(this)[0].innerText //gets tag name
-
-                var currTag = $(this)
-                var currentColor = currTag.css("background-color")
+                var currentColor = $(this).css("background-color")
                 var newColor = ""
 
-                if (currentColor == "rgb(220, 37, 106)"){
-                    newColor =  "rgb(255, 181, 49)"
+                if (currentColor == pink) {
+                    newColor = yellow
                 }
-                else{
-                    newColor = "rgb(220, 37, 106)"
+                else {
+                    newColor = pink
                 }
 
-                $("[data-value='" + val + "']").each(function () {
-                    currDiv = $(this).parent().parent()
-
-                    if (newColor == "rgb(255, 181, 49)") {
-                        currDiv.hide()
-                    }
-                    else {
-                        currDiv.show()
-                    }
-                })
-                currTag.css('background-color', newColor);
+                $(this).css('background-color', newColor);
+                if ($(".tag[style='background-color: rgb(255, 181, 49);']").length == 0) { //if no tags are selected, show all
+                    $('.flexchild').show()
+                }
+                else {
+                    $('.flexchild').hide()
+                    var activeTags = [] // gets all tags that are yellow, or active
+                    $(".tag[style='background-color: rgb(255, 181, 49);']").each(function () {
+                        activeTags.push($(this)[0].innerText)
+                    })
+                    $(".flexchild").each(function () {
+                        tagBox = $(this).children()[1]
+                        tags = []
+                        $(tagBox).children().each(function () {
+                            tags.push($(this)[0].innerText)
+                        })
+                        let checker = (arr, target) => target.every(v => arr.includes(v)); //checks to see if all the tags in activetags are in the current problem tags
+                        if (checker(tags, activeTags)) {
+                            $(this).show()
+                        }
+                    })
+                }
+                if ($(".flexchild:visible").length == 0) { //if no tag results match, then show this message that nothing matches
+                    $('#nothing').show()
+                }
+                else {
+                    $('#nothing').hide()
+                }
 
             })
         })
