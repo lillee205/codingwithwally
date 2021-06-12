@@ -51,7 +51,9 @@
     </div>
 
     <script type="text/javascript">
+        var activeTags = []
         $(function () {
+            
             var yellow = "rgb(255, 181, 49)"
             var pink = "rgb(220, 37, 106)"
             $(".tag").click(function () { // filtering system
@@ -59,24 +61,23 @@
                 var val = $(this)[0].innerText //gets tag name
                 var currentColor = $(this).css("background-color")
                 var newColor = ""
-
+                var currTag = $(this)[0].innerText
                 if (currentColor == pink) {
                     newColor = yellow
+                    activeTags.push(currTag)
                 }
                 else {
                     newColor = pink
+                    activeTags.splice(activeTags.indexOf(currTag), 1)
                 }
 
                 $(this).css('background-color', newColor);
+                
                 if ($(".tag[style='background-color: rgb(255, 181, 49);']").length == 0) { //if no tags are selected, show all
                     $('.flexchild').show()
                 }
                 else {
-                    $('.flexchild').hide()
-                    var activeTags = [] // gets all tags that are yellow, or active
-                    $(".tag[style='background-color: rgb(255, 181, 49);']").each(function () {
-                        activeTags.push($(this)[0].innerText)
-                    })
+                    $('.flexchild').hide() 
                     $(".flexchild").each(function () {
                         tagBox = $(this).children()[1]
                         tags = []

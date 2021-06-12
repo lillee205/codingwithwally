@@ -1,12 +1,32 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, flash
 import traceback
 import pcode
 import html
 import random
 import json
 from problems import *
+"""
+from flask_sqlalchemy import SQLAlchemy
+"""
 app = Flask(__name__)
+"""
+app.config['SQLACHEMY_DATABSE_URI'] = 'sqlite:///problems.sqlite3'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+db = SQLAlchemy(app)
+
+class Problem(db.Model):
+    func_name = db.Column("func_name", db.String(50), primary_key = True)
+    func_call = db.Column(db.String(70), nullable = False)
+    desc = db.Column(db.String, nullable = False)
+    testInputs = db.Column(db.String, nullable = False)
+    testInputAnswers = db.Column(db.String, nullable = False)
+    tags = db.Column(db.String, nullable = False)
+    function = db.Column(db.String, nullable = False)
+    
+    def __repr__(self):
+        return '<Problem %r' % self.func_name
+"""
 # stores the current problem we are on
 problem = ""
 contents = ""
@@ -69,8 +89,7 @@ def background_process_testInputs():
     yourOutput = json.loads(request.args.get('output'))
     input = request.args.get('input')
     try:
-        correctAns = eval(
-            "pcode." + contents['func_call'][: (contents['func_call'].index("("))] + "(" + input + ")")
+        correctAns = eval("pcode.{func}({input})".format(func = contents['func_name'], input = input))
         if correctAns == yourOutput:
             return jsonify(result="true")
         else:
@@ -82,14 +101,22 @@ def background_process_testInputs():
 
 @app.route('/background_process_testOutputs')
 def background_process_testOutputs():
-    output = eval(request.args.get('output'))
-    ans = eval(
-        "pcode." + contents[4][: (contents[4].index("("))] + "(" + str(output) + ")")
-    if ans == 9:
-        return jsonify(result="Correct, an input of " + str(output) + " works")
-    else:
-        return jsonify(result="Incorrect, an input of {} gives you an output of {}".format(str(output), ans))
+    yourInput = request.args.get('input')
+    output = json.loads(request.args.get('output'))
+    print(yourInput)
+    print(output)
+    try:
+        yourAns = eval("pcode.{func}({input})".format(func = contents['func_name'], input = yourInput))
+        print("the answer u get is " + str(yourAns))
+        if yourAns == output:
+            return jsonify(result ="true")
+        else:
+            return jsonify(result="false")
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify(result="Error")
 
 
 if __name__ == "__main__":
+    #db.create_all()
     app.run(debug=True)

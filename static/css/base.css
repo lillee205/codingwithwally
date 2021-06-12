@@ -86,6 +86,19 @@ h3 {
     display: inline-block;
     color: gray;
 }
+.ace_editor {
+    overflow: visible;
+    font-family: monospace;
+}
+#jsEditor { 
+    border: 0.2em black solid;
+    height: 45vh;
+    width: 95%;
+    font-family : monospace !important;
+    font-size: 16px !important;
+    direction:ltr !important;
+    text-align:left !important;
+}
 
 p {
     font-family: "Verdana", sans-serif;

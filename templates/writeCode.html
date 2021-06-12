@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename = 'css/writeCode.css') }}">
 <script type=text/javascript>
 	$(function() {
 		$('input#submitCode').bind('click', function() {
-			m = reformat("{{tests}}")
 		$.getJSON('/background_process_writeCode', {
 			code: ace.edit("jsEditor").getValue(),
 			problem: "{{function_name}}",
@@ -48,7 +46,7 @@
 		editor.setTheme("ace/theme/monokai");
 		editor.session.setMode("ace/mode/python");
 	</script>
-	<input class="submitbtn" id="submitCode" type="submit" value="submit" />
+	<input class="submitbtn" id="submitCode" type="submit" value="submit" style = "margin-top: 1.2em;"/>
 </form>
 {% endblock %}
 
