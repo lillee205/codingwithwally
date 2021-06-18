@@ -3,7 +3,7 @@ from flask import Flask
 import os.path
 from routes import wally
 from socket import gethostname
-
+from model import Problem
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///problems.db'
