@@ -2,8 +2,6 @@ from database import db
 from flask import Flask
 import os.path
 from routes import wally
-from model import Problem
-import json
 from socket import gethostname
 
 def create_app():
