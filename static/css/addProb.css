@@ -47,7 +47,7 @@ table th {
     cursor: pointer;
 }
 .submitbtn {
-    margin-top: 1em;
+    margin-top: 0.5em;
     font-size: 1em;
     background-color: rgb(255, 181, 49);
     border: none;
@@ -69,4 +69,28 @@ img:hover{
 
 label{
     font-size: 0.8em;
+}
+
+.ql-toolbar.ql-snow{
+    border: none !important;
+    background-color: rgb(20,20,20);
+}
+
+.ql-editor{
+    background-color:white;
+    color: black !important;
+}
+
+.ql-toolbar .ql-stroke {
+    fill: none !important;
+    stroke: #fff !important;
+}
+
+.ql-toolbar .ql-fill {
+    fill: #fff !important;
+    stroke: none !important;
+}
+
+.ql-toolbar .ql-picker {
+    color: #fff !important;
 }

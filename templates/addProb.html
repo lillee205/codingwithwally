@@ -11,7 +11,15 @@
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/addProb.css') }}">
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/misc.css') }}">
     <link rel="icon" href="https://cdn.discordapp.com/attachments/574052228206297090/852681325315096587/AAA.png">
+    <!-- Main Quill library -->
+    <script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
 
+    <!-- Theme included stylesheets -->
+    <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
+
+  
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script defer type="text/javascript" src="{{ url_for('static', filename = 'js/select.js') }}"></script>
@@ -35,15 +43,19 @@
             </div>
 
             <div style="display: inline-block; width:60%;height:22vh;padding-right:1.5em;">
-                <textarea id="typeDesc" name="desc" placeholder="description of function. please include what data types your input and output should be." style="border-radius:5px;"></textarea>
+
+                <input name = "desc" type = "hidden">
+                <div id = "toolbar"></div>
+                <div id = "editor"></div>
             </div>
+
             <div style="display: inline-block; padding:0.5em;">
                 <input type="text" placeholder="your name (optional)" name="author" val = "">
                 <h2 style="margin: 1.5vh 0;">tags</h2>
 
                 <div id="checkboxWrap">
                     {% set checks = ['python', 'java', 'easy', 'medium', 'hard', 'strings', 'booleans', 'arrays',
-                    'recursion',
+                    'recursion', 'ints',
                     'higher-order functions'] %}
                     {% for check in checks %}
                         {% if check == 'java' %}
@@ -57,7 +69,7 @@
                     {% endfor %}
                 </div>
             </div>
-            <div id="flexbox">
+            <div id="flexbox" style = "margin-top:0.5em;">
                 <div class="flexchild" id="leftcontent">
                     <div id="jsEditor">def func(input):
 #please replace func with your function name
@@ -110,16 +122,34 @@
             </div>
     </form>
     <script type="text/javascript">
-        var x = ""
         $(function () {
-            
+
+            //setting up quill rich text editor
+            var toolBarOptions = [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote'],
+                [{'list': 'ordered'}, {'list': 'bullet'}]
+            ]
+            var quill = new Quill("#editor", {
+                modules: {
+                    toolbar: toolBarOptions
+                },
+                theme: 'snow',
+                placeholder: 'Write a description of your prompt. Be as explicit as you can! 50 characters min.'
+
+            })  
+                quill.on('text-change', () => {
+                $('input[name = desc]').val(quill.root.innerHTML)
+            });
             $('#myform').submit(function (e) { //check for errors in form submission
                 e.preventDefault()
 
                 //checks if function name already exists, since we cannot have two functions with same name
                 checkName().then(function(val){
                     flag = true 
-                    if ($("#typeDesc").val().length < 5 ){
+
+                   
+                    if (quill.getText().length < 50 ){
                         alert("Brevity may be the soul of wit, but in this case, more explanation may be better.")
                         flag =  false
 
@@ -128,12 +158,11 @@
                         alert("Please tag your problem appropriately!")
                         flag =  false;
                     }
-                    if ($('.trash').length < 1){
+                    if ($('.trash').length < 3){
                         alert("Please write at least three test cases.")
                         flag = false;
                     }
                     if (flag && val){
-                        console.log("please submit")
                         e.currentTarget.submit()
                     }
 
@@ -174,9 +203,7 @@
                     output: JSON.stringify(eval(output.val())),
                 }, function (data) {
                     if (data.result == "WALLY RULES!") {
-                        console.log("input is " + input.val())
-                        console.log(input.val())
-                        console.log(typeof input.val())
+
                         $('#error').text('')
                         currObj.replaceWith("<img class ='trash' style = 'height: 3em; width: 3em' src ='../static/assets/trashcan.png'>")
                         var markup = `

@@ -15,8 +15,8 @@ def create_app():
 
 def setup_database(app):
     with app.app_context():
-        #Problem.query.delete()
-        #db.session.commit()
+        Problem.query.delete()
+        db.session.commit()
         db.create_all()
 
 
