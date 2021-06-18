@@ -90,6 +90,7 @@ def addProb():
         addProbInputs = []
         addProbOutputs = []
         addToDict(prob)
+        return render_template("index.html")
     return render_template('addProb.html')
 
 
