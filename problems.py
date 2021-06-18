@@ -13,6 +13,7 @@ sum13_dict = {
     'testInputs': [[1,2,2,1], [1,1], [1,2,2,1,13]],
     'tags': ["python", "arrays", "easy"],
 }
+
 sum13_dict['function'] = eval("pcode." + sum13_dict['func_name'])
 sum13_dict['testInputAnswers'] = pcode.checkTestInputs(sum13_dict['function'], sum13_dict['testInputs'])
 
