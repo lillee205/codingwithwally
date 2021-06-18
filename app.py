@@ -4,7 +4,7 @@ import os.path
 from routes import wally
 from model import Problem
 import json
-
+from socket import gethostname
 
 def create_app():
     app = Flask(__name__)
@@ -26,4 +26,5 @@ if __name__ == '__main__':
     app = create_app()
     if not os.path.isfile('/problems.db'):
         setup_database(app)
-    app.run(debug=True)
+    if 'liveconsole' not in gethostname():
+        app.run(debug = True)

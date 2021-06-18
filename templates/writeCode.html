@@ -18,8 +18,11 @@
 			}
 			else{
 				yourAnswers = data.result
+
 				$( ".output" ).each(function (index){
-					$(this).text(yourAnswers[index])
+					console.log(yourAnswers[index])
+					console.log(typeof yourAnswers[index])
+					$(this).text(JSON.stringify(yourAnswers[index]))
 				})
 				$("#result").text("")
 			}

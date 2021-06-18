@@ -45,7 +45,11 @@
 
         <div id="header" class="noselect">
             <h1>CODING WITH WALLY</h1>
-            <h3>{{function_name}}</h3>
+            <h3>{{function_name}}
+            {% if (author != "" or author != None ) %}
+: {{author}}
+            {% endif %}
+            </h3>       
             <form name="selectForm" id="selectForm" action="{{ url_for('wally.change_type', problem_pg = function_name) }}" method="post"
                 style="display: inline-block;">
                 <input type="hidden" id="hiddenSelect" name="hiddenSelect" value="" />

@@ -5,6 +5,7 @@ class Problem(db.Model):
     __table_args__ = {'extend_existing': True}
     func_name = db.Column("func_name", db.String(50), primary_key = True)
     func_call = db.Column(db.String(70), nullable = False)
+    author = db.Column(db.String(40), nullable = False)
     desc = db.Column(db.String, nullable = False)
     testInputs = db.Column(db.String, nullable = False)
     testInputAnswers = db.Column(db.String, nullable = False)
