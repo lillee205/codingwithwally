@@ -16,24 +16,27 @@
 
 <body class="noselect">
     <div class="triangle">
+        <div id="popup">
+            <h2>ADD NEW CODING PROBLEM?</h2>
+            <div class="btn hvr-grow">yes</div>
+            <div class="btn hvr-grow">no</div>
 
+        </div>
         <h1 class="animate fadeInDown one">CODING WITH WALLY</h1>
         <p class="animate fadeInDown one" style="width: 80%; margin: auto;">for all your coding needs!</p>
         <div id="tags" class="animate fadeInDown one">
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">python</div>
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">java</div>
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">easy</div>
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">medium</div>
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">hard</div>
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">strings</div>
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">booleans</div>
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">arrays</div>
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">recursion</div>
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">higher-order functions</div>
+            {% set htmltags = ['python', 'java', 'easy', 'medium', 'hard', 'strings', 'booleans', 'arrays', 'recursion',
+            'higher-order functions'] %}
+            {% for tag in htmltags %}
+            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">{{tag}}</div>
+            {% endfor %}
+
         </div>
         <div id="flex" class="animate fadeInDown one">
+            <div class="plus" id = "plus">
+            </div>
             {% for key, value in problems.items() %}
-            <a href="/{{key}}" class="flexchild">
+            <a href="{{ url_for('wally.change_type', problem_pg = key)}}" class="flexchild">
                 <h4>{{key}}</h4>
                 <div id="tagsSmallFlex">
                     {% for tag in problems[key]['tags'] %}
@@ -44,16 +47,28 @@
             {% endfor %}
             <p id="nothing" style="display: none;">nothing was found except for the infinite expanse of the void.</p>
         </div>
-        <form name="chooseForm" id="chooseForm" action="{{ url_for('index') }}" method="post"
+        <form name="chooseForm" id="chooseForm" action="{{ url_for('wally.index') }}" method="post"
             style="display: inline-block;">
             <input type="hidden" id="hiddenChoose" name="hiddenChoose" value="" />
         </form>
     </div>
 
     <script type="text/javascript">
+        $("#plus").click(function(){
+            $('#popup').fadeIn("fast")
+        })
+        $(".btn").click(function(){
+            if ($(this)[0].innerText == "yes"){
+                window.location.href = "/addProb";
+            }
+            else{
+                $('#popup').fadeOut("fast")
+            }
+        })
+
         var activeTags = []
         $(function () {
-            
+
             var yellow = "rgb(255, 181, 49)"
             var pink = "rgb(220, 37, 106)"
             $(".tag").click(function () { // filtering system
@@ -72,12 +87,12 @@
                 }
 
                 $(this).css('background-color', newColor);
-                
+
                 if ($(".tag[style='background-color: rgb(255, 181, 49);']").length == 0) { //if no tags are selected, show all
                     $('.flexchild').show()
                 }
                 else {
-                    $('.flexchild').hide() 
+                    $('.flexchild').hide()
                     $(".flexchild").each(function () {
                         tagBox = $(this).children()[1]
                         tags = []

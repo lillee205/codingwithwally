@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Coding With Wally</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/base.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/addProb.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/misc.css') }}">
+    <link rel="icon" href="https://cdn.discordapp.com/attachments/574052228206297090/852681325315096587/AAA.png">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <script defer type="text/javascript" src="{{ url_for('static', filename = 'js/select.js') }}"></script>
+</head>
+
+<body>
+    <div id="sidebar" class="noselect">
+        <a href="/" id="home">home</a>
+        <a id="rand">random problem</a>
+        <a>help</a>
+    </div>
+    <form id="myform" action="{{ url_for('wally.addProb') }}" method="POST">
+
+        <div id="main">
+            <div id="header" class="noselect">
+                <h1>CODING WITH WALLY</h1>
+                <h3>create your own problem!</h3>
+            </div>
+
+            <div style="display: inline-block; width:60%;height:22vh;padding-right:1.5em;">
+                <textarea id="typeDesc" name="desc" placeholder="description of function. please include what data types your input and output should be." style="border-radius:5px;"></textarea>
+            </div>
+            <div style="display: inline-block; padding:0.5em;">
+                <input type="text" placeholder="your name (optional)" name="author">
+                <h2 style="margin: 1.5vh 0;">tags</h2>
+
+                <div id="checkboxWrap">
+                    {% set checks = ['python', 'java', 'easy', 'medium', 'hard', 'strings', 'booleans', 'arrays',
+                    'recursion',
+                    'higher-order functions'] %}
+                    {% for check in checks %}
+                        {% if check == 'java' %}
+                            <span style="white-space: nowrap;"><input type="checkbox" name="tag" value={{check}}  onclick="return false;">
+                                <label for={{check}}>{{check}}</label><br></span>
+                        {% else %} 
+                            <span style="white-space: nowrap;"><input type="checkbox" name="tag" value={{check}}>
+                                <label for={{check}}>{{check}}</label><br></span>
+                        {% endif %}
+
+                    {% endfor %}
+                </div>
+            </div>
+            <div id="flexbox">
+                <div class="flexchild" id="leftcontent">
+                    <div id="jsEditor">def func(input):
+#please replace func with your function name
+#and input with a placeholder name for your input
+#delete this comment afterwards
+                    </div>
+                    <script type="text/javascript">
+                        $(function () {
+                            var editor = ace.edit("jsEditor");
+                            var input = $('input[name=function]');
+
+                            editor.setTheme("ace/theme/monokai");
+                            editor.session.setMode("ace/mode/python");
+                            editor.getSession().on("change", function () {
+                                input.val(editor.getValue());
+                            });
+                        });
+                    </script>
+                    <input class="submitbtn" type="submit" value="submit">
+
+                </div>
+                <div class="flexchild" id="rightcontent">
+                    <h2>test cases</h2>
+                    <div style="overflow-y: auto; height: 40vh;">
+                        <table>
+                            <tr>
+                                <th>input</th>
+                                <th>output</th>
+                                <th>test</th>
+                            </tr>
+                            <tr>
+                                <td class="inputText">
+                                    <textarea style="margin-right: 0; resize: vertical;"></textarea>
+                                </td>
+                                <td class="outputText">
+                                    <textarea style="margin-right: 0;resize: vertical;"></textarea>
+                                </td>
+                                <td class="testText">
+                                    <div class="plus" id="plus">
+
+                                </td>
+
+                            </tr>
+                        </table>
+                    </div>
+                    <p id="error"></p>
+                    <input type="hidden" name="function" val="" />
+                </div>
+
+            </div>
+    </form>
+    <script type="text/javascript">
+        var x = ""
+        $(function () {
+            
+            $('#myform').submit(function (e) { //check for errors in form submission
+                e.preventDefault()
+
+                //checks if function name already exists, since we cannot have two functions with same name
+                checkName().then(function(val){
+                    flag = true 
+                    if ($("#typeDesc").val().length < 5 ){
+                        alert("Brevity may be the soul of wit, but in this case, more explanation may be better.")
+                        flag =  false
+
+                    }
+                    if ($("input:checkbox:checked").length == 0){
+                        alert("Please tag your problem appropriately!")
+                        flag =  false;
+                    }
+                    if ($('.trash').length < 1){
+                        alert("Please write at least three test cases.")
+                        flag = false;
+                    }
+                    if (flag && val){
+                        console.log("please submit")
+                        e.currentTarget.submit()
+                    }
+
+                })
+
+            });
+            function checkName(){
+                return new Promise(function(resolve, reject){
+                    var code = ace.edit("jsEditor").getValue()
+                    $.getJSON('/background_process_checkFuncName',{
+                        func_name: code.slice(code.indexOf("def") + 4, code.indexOf("("))
+                    }, function(data){
+                        flag = true;
+                        if (data.result == "invalid"){
+                            alert("This function name already exists in the database. Please choose a different name.")
+                            flag = false
+                        }
+                        resolve(flag)
+                    })
+                })
+
+            }
+            $(document).on("click", ".trash", function  () { //delete row
+                $(this).closest('tr').remove()
+            })
+
+            $(document).on("click", ".plus", function () { //once you check that input and output is valid, replace plus sign with check mark to signify that it is valid
+                //check to make sure input and output are valid
+                var currObj = $(this)
+                var currRow = $(this).closest('tr')
+                var input = currRow.children('.inputText').children()
+                var output = currRow.children('.outputText').children()
+
+                //send to python server and test
+                $.getJSON('/background_process_testCode', {
+                    code: ace.edit("jsEditor").getValue(),
+                    input: JSON.stringify(eval(input.val())),
+                    output: JSON.stringify(eval(output.val())),
+                }, function (data) {
+                    if (data.result == "WALLY RULES!") {
+                        console.log("input is " + input.val())
+                        console.log(input.val())
+                        console.log(typeof input.val())
+                        $('#error').text('')
+                        currObj.replaceWith("<img class ='trash' style = 'height: 3em; width: 3em' src ='../static/assets/trashcan.png'>")
+                        var markup = `
+                        <tr>
+                            <td class="inputText">
+                                <textarea style="margin-right: 0; resize: vertical;"></textarea>
+                            </td>
+                            <td class="outputText">
+                                <textarea style="margin-right: 0;resize: vertical;"></textarea>
+                            </td>
+                            <td class="testText">
+                                <div class= "plus" id = "plus">
+                            </td>
+                        </tr>
+                        <input type = 'hidden' name = 'inputzz' value = ${input.val()}>
+                        <input type = 'hidden' name = 'outputzz' value = ${output.val()}>
+                        `
+                        input.replaceWith(input.val())
+                        output.replaceWith(output.val())
+                        $("table tbody").append(markup)
+                    }
+                    else {
+                        console.log("error")
+                        $('#error').text(data.result)
+                    }
+                });
+
+            })
+        });
+    </script>
+
+</body>
+
+</html>

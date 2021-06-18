@@ -1,7 +1,7 @@
 import pcode
-import routes
-
+from model import Problem
 #dictionaries that contain data for each problem
+
 
 sum13_dict = {
     'func_name': "sum13",
@@ -33,7 +33,12 @@ fold_dict = {
 fold_dict['function'] = eval("pcode." + fold_dict['func_name'])
 fold_dict['testInputAnswers'] = pcode.checkTestInputs(fold_dict['function'], fold_dict['testInputs'])
 
+
+
+sumProb = Problem(**sum13_dict)
+foldProb = Problem(**fold_dict)
+
 probDict = {
-    "fold": fold_dict,
-    "sum13": sum13_dict
+    "fold": sumProb,
+    "sum13": foldProb
 }

@@ -3,6 +3,7 @@
 {% block head %}
 <script type=text/javascript>
 	$(function() {
+	
 		$('input#submitCode').bind('click', function() {
 		$.getJSON('/background_process_writeCode', {
 			code: ace.edit("jsEditor").getValue(),

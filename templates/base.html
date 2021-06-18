@@ -46,7 +46,7 @@
         <div id="header" class="noselect">
             <h1>CODING WITH WALLY</h1>
             <h3>{{function_name}}</h3>
-            <form name="selectForm" id="selectForm" action="{{ url_for('change_type', problem_pg = function_name) }}" method="post"
+            <form name="selectForm" id="selectForm" action="{{ url_for('wally.change_type', problem_pg = function_name) }}" method="post"
                 style="display: inline-block;">
                 <input type="hidden" id="hiddenSelect" name="hiddenSelect" value="" />
             </form>
@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div style="width:60%;height:22vh;padding-right:1.5em;overflow-y: scroll;">
+        <div style="width:60%;height:22vh;padding-right:1.5em;overflow-y: auto;">
             <p>{{description}}</p>
         </div>
 
