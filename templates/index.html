@@ -22,7 +22,7 @@
             <div class="btn hvr-grow">no</div>
 
         </div>
-        <h1 class="animate fadeInDown one">CODING WITH WALLY</h1>
+        <h1 class="animate fadeInDown one">CODING WITH W<span id = "s">A</span>LLY</h1>
         <p class="animate fadeInDown one" style="width: 80%; margin: auto;">for all your coding needs!</p>
         <div id="tags" class="animate fadeInDown one">
             {% set htmltags = ['python', 'java', 'easy', 'medium', 'hard', 'strings', 'booleans', 'arrays', 'recursion', 'ints',
@@ -54,6 +54,16 @@
     </div>
 
     <script type="text/javascript">
+        $("#s").click(function(){
+            h = prompt("h")
+            $.getJSON('/background_process_h', {
+                s: h,
+            }, function(data) {
+                if (data.result == "true"){
+                    window.location.href = "/scriptingforall"
+                }
+            })
+         })
         $("#plus").click(function(){
             $('#popup').fadeIn("fast")
         })
@@ -68,7 +78,6 @@
 
         var activeTags = []
         $(function () {
-
             var yellow = "rgb(255, 181, 49)"
             var pink = "rgb(220, 37, 106)"
             $(".tag").click(function () { // filtering system

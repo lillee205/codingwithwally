@@ -1,6 +1,8 @@
 from flask import render_template, request, jsonify, url_for, redirect
 import traceback
 import json
+
+import flask_sqlalchemy
 from model import Problem
 from database import db
 from sqlalchemy import exc
@@ -13,7 +15,7 @@ SQLALCHEMY_ECHO=True
 problem = ""
 contents = ""
 probDict = {}
-
+admin_flag = False 
 # to keep track of inputs and outputs when adding test cases
 addProbInputs = []
 addProbOutputs = []
@@ -66,12 +68,11 @@ def addProb():
     initDict()
 
     if request.method == "POST":
-        prob = ""
         function = request.form['function']
         func_call = function[function.index('def') + 4 : function.index(':')]
         author = request.form['author']
         func_name = func_call[:func_call.index("(")]
-        desc = request.form['desc']
+        desc = request.form['desc'].replace("background-color: rgb(255, 255, 255);", "background-color: transparent;").replace("color: rgb(0, 0, 0);", "color: white;")
 
         testInputs = json.dumps(addProbInputs)
         testInputAnswers = json.dumps(addProbOutputs)
@@ -90,9 +91,8 @@ def addProb():
         addProbInputs = []
         addProbOutputs = []
         addToDict(prob)
-        return render_template("index.html")
+        return render_template("index.html", problems = probDict)
     return render_template('addProb.html')
-
 
 @wally.route('/<problem_pg>', methods=["POST", "GET"])
 def change_type(problem_pg):
@@ -129,6 +129,25 @@ def change_type(problem_pg):
 
     return render_template("writeCode.html", author = contents.author,function_name=contents.func_name, description=contents.desc, tests=contents.testInputs, ansKey=contents.testInputAnswers, func_call=contents.func_call, tags = contents.tags)
 
+@wally.route('/scriptingforall', methods = ["POST", "GET"])
+def scriptingforall():
+    global probDict
+    global problem
+    global contents
+    global admin_flag
+    if request.method == "POST":
+        checked = request.form.getlist('problemos')
+        for check in checked:
+            Problem.query.filter_by(func_name = check).delete()
+            probDict.pop(check, -1)
+        db.session.commit()
+        admin_flag = False
+        return redirect(url_for('wally.index'))
+
+    if admin_flag:
+        return render_template("scriptingforall.html", problems = list(probDict.keys()))
+    
+    return redirect("https://screamintothevoid.com")
 
 @wally.route('/background_process_writeCode')
 def background_process_writeCode():
@@ -212,3 +231,13 @@ def background_process_checkFuncName():
         return jsonify(result = "valid")
     else:
         return jsonify(result="invalid")
+
+@wally.route('/background_process_h')
+def background_process_h():
+    global admin_flag
+    ans = request.args.to_dict()['s']
+    if ans == "CS_W0rld_D0min8i0n":
+        admin_flag = True
+        return jsonify(result = "true")
+    else:
+        return jsonify(result = "h")

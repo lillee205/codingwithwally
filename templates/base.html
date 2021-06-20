@@ -66,7 +66,7 @@
             </div>
         </div>
 
-        <div style="width:60%;height:22vh;padding-right:1.5em;overflow-y: auto;">
+        <div style="width:60%;height:22vh;padding-right:1.5em;overflow-y: auto; overflow-wrap:break-word;">
             {{description|safe}}
         </div>
 
@@ -74,7 +74,7 @@
             <div class="flexchild" id="leftcontent">
                 {% block content %}{% endblock %}
             </div>
-            <div class="flexchild" id="rightcontent">
+            <div class="flexchild" id="rightcontent" style = "overflow-y:auto;">
                 <h2>results</h2>
                 {% block answers %}{% endblock %}
             </div>
