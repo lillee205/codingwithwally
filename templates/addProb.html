@@ -54,9 +54,6 @@
                 <h2 style="margin: 1.5vh 0;">tags</h2>
 
                 <div id="checkboxWrap">
-                    {% set checks = ['python', 'java', 'easy', 'medium', 'hard', 'strings', 'booleans', 'arrays',
-                    'recursion', 'ints',
-                    'higher-order functions'] %}
                     {% for check in checks %}
                         {% if check == 'java' %}
                             <span style="white-space: nowrap;"><input type="checkbox" name="tag" value={{check}}  onclick="return false;">

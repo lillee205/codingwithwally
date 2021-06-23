@@ -1,5 +1,7 @@
-from database import db
-
+from initialize import db
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField
+from wtforms.validators import InputRequired, Email, Length, ValidationError
 
 class Problem(db.Model):
     __table_args__ = {'extend_existing': True}
@@ -20,3 +22,34 @@ class Problem(db.Model):
             outputs = {outputs}\n
             tags = {tags}\n
         """.format(func_name =self.func_name, function = self.function, inputs = self.testInputs, outputs = self.testInputAnswers, tags = self.tags)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    email = db.Column(db.String(50), unique = True)
+    password = db.Column(db.String(80))
+    admin = db.Column(db.Boolean(), default = False)
+
+    def __repr__(self):
+        return self.email + ". is admin?  " + str(self.admin)
+
+#WTFORMS CLASSES
+
+#custom validator that will raise an error if email is not HMC
+class HMCEmail(object):
+    def __init__(self, message=None):
+        if not message:
+            message = u'Email must be a HMC email.'
+        self.message = message 
+    def __call__(self, form, field):
+        if "@hmc.edu" not in field.data and "@g.hmc.edu" not in field.data:
+            raise ValidationError("Email must be a HMC email.")
+
+class LoginForm(FlaskForm):
+    email = StringField('email', validators = [InputRequired(), Email()])
+    password = PasswordField('password', validators = [InputRequired()])
+
+class RegisterForm(FlaskForm):
+    email = StringField('email', validators = [InputRequired(), Email(check_deliverability = True), HMCEmail()])
+    password = PasswordField('password', validators = [InputRequired(), Length(min=8, max = 20)])
+
+

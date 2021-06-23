@@ -1,13 +1,15 @@
-from flask import render_template, request, jsonify, url_for, redirect
+from flask import render_template, session, request, jsonify, url_for, redirect, flash
+from flask_wtf import FlaskForm
 import traceback
 import json
-
 import flask_sqlalchemy
-from model import Problem
-from database import db
+from model import Problem, User, LoginForm, RegisterForm
+from initialize import db, bcrypt
 from sqlalchemy import exc
 from flask.blueprints import Blueprint 
 import random 
+from accounts import initAdminAcc
+from decorators import admin_required
 
 wally = Blueprint('wally', __name__, template_folder = "templates", static_folder = "static")
 SQLALCHEMY_ECHO=True
@@ -15,10 +17,13 @@ SQLALCHEMY_ECHO=True
 problem = ""
 contents = ""
 probDict = {}
-admin_flag = False 
 # to keep track of inputs and outputs when adding test cases
 addProbInputs = []
 addProbOutputs = []
+
+
+tagList = ['python', 'java', 'easy', 'medium', 'hard', 'strings', 'booleans', 'arrays', 'recursion', 'ints',
+            'higher-order functions', 'test input & output', 'find bugs']
 
 def initDict(): #adds all problems currently in database to the dictionary probDict
     global probDict 
@@ -42,20 +47,22 @@ def index():
     global addProbOutputs 
     addProbInputs = []
     addProbOutputs = []
-    
+
     global problem
     global contents
     global probDict
-
-    initDict()
-
     problem = ""
     contents = ""
-
-    return render_template('index.html', problems = probDict)
+    initDict()
+    initAdminAcc()
+    if "user" not in session:
+        return redirect(url_for('wally.login'))
+    else:
+        return render_template('index.html', problems = probDict, tagList = tagList, admin = session["isAdmin"])
 
 
 @wally.route("/addProb", methods = ["POST", "GET"])
+@admin_required
 def addProb():
     global addProbInputs
     global addProbOutputs 
@@ -79,22 +86,57 @@ def addProb():
         tags = json.dumps(request.form.getlist('tag'))
 
         prob = Problem(author = author, func_name = func_name, func_call = func_call, desc = desc, testInputs = testInputs, testInputAnswers = testInputAnswers, tags = tags, function = function)
+        db.session.add(prob)
         try:
-            db.session.add(prob)
             db.session.commit()
-
         except exc.SQLAlchemyError:
-            print("\n\nredirect")
-            traceback.print_exc()
+            db.session.rollback()
             return redirect(url_for('wally.addProb'))
-        print("problem successfully added!")
         addProbInputs = []
         addProbOutputs = []
         addToDict(prob)
-        return render_template("index.html", problems = probDict)
-    return render_template('addProb.html')
+        return redirect(url_for("wally.index"))
+    return render_template('addProb.html', checks = tagList)
 
-@wally.route('/<problem_pg>', methods=["POST", "GET"])
+
+@wally.route('/register', methods = ["POST", "GET"])
+def register():
+    form = RegisterForm() 
+
+    if form.validate_on_submit():
+        hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        newUser = User(email = form.email.data, password = hashed_pass )
+        db.session.add(newUser)
+        try:
+            db.session.commit()
+        except exc.SQLAlchemyError:
+            db.session.rollback()
+        return redirect(url_for('wally.login'))
+
+    return render_template("register.html", form = form)
+
+@wally.route('/login', methods = ["POST", "GET"])
+def login():
+    initAdminAcc()
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        logUser = User.query.filter_by(email = form.email.data).first()
+        if logUser:
+            if bcrypt.check_password_hash(logUser.password, form.password.data):
+                session["user"] = (logUser).email
+                session["isAdmin"] = logUser.admin
+                return redirect(url_for('wally.index'))
+    return render_template("login.html", form = form)
+
+@wally.route('/logout', methods = ["POST", "GET"])
+def logout():
+    session.pop("user", None)
+    session.pop("isAdmin", None)
+    return redirect(url_for('wally.login'))
+
+
+@wally.route('/prob/<problem_pg>', methods=["POST", "GET"])
 def change_type(problem_pg):
     global addProbInputs
     global addProbOutputs
@@ -125,29 +167,23 @@ def change_type(problem_pg):
                 redirect(url_for('wally.change_type', problem_pg = problem))
             return render_template("writeCode.html", author = contents.author,function_name=contents.func_name, description=contents.desc, tests=contents.testInputs, ansKey=contents.testInputAnswers, func_call=contents.func_call, tags = contents.tags)
         else:
-            return render_template("index.html")
+            return render_template('index.html', problems = probDict, tagList = tagList)
 
     return render_template("writeCode.html", author = contents.author,function_name=contents.func_name, description=contents.desc, tests=contents.testInputs, ansKey=contents.testInputAnswers, func_call=contents.func_call, tags = contents.tags)
 
-@wally.route('/scriptingforall', methods = ["POST", "GET"])
-def scriptingforall():
+@wally.route('/background_process_delete')
+def background_process_delete():
     global probDict
     global problem
     global contents
-    global admin_flag
-    if request.method == "POST":
-        checked = request.form.getlist('problemos')
-        for check in checked:
-            Problem.query.filter_by(func_name = check).delete()
-            probDict.pop(check, -1)
+    func_name = request.args.to_dict()['func_name']
+    Problem.query.filter_by(func_name = func_name).delete()
+    probDict.pop(func_name, -1)
+    try:
         db.session.commit()
-        admin_flag = False
-        return redirect(url_for('wally.index'))
-
-    if admin_flag:
-        return render_template("scriptingforall.html", problems = list(probDict.keys()))
-    
-    return redirect("https://screamintothevoid.com")
+    except exc.SQLAlchemyError:
+        db.session.rollback()
+    return redirect(url_for('wally.index'))
 
 @wally.route('/background_process_writeCode')
 def background_process_writeCode():
@@ -160,7 +196,6 @@ def background_process_writeCode():
             testAns += [eval(contents.func_name + "({})".format(input))]
         return jsonify(result=testAns)
     except Exception as e:
-        traceback.print_exc()
         return jsonify(result="Error: " + str(e))
 
 
@@ -177,7 +212,7 @@ def background_process_testInputs():
         else:
             return jsonify(result="false")
     except Exception as e:
-        traceback.print_exc()
+
         return jsonify(result="Error")
 
 
@@ -195,10 +230,11 @@ def background_process_testOutputs():
         else:
             return jsonify(result="false")
     except Exception:
-        #traceback.print_exc()
+
         return jsonify(result="Error")
 
 @wally.route('/background_process_testCode')
+
 def background_process_testCode():
     global addProbInputs
     global addProbOutputs
@@ -225,6 +261,7 @@ def background_process_testCode():
     return jsonify(result = "WALLY RULES!")
     
 @wally.route('/background_process_checkFuncName')
+
 def background_process_checkFuncName():
     func_name = request.args.to_dict()['func_name']
     if Problem.query.get(func_name) == None:
@@ -232,12 +269,3 @@ def background_process_checkFuncName():
     else:
         return jsonify(result="invalid")
 
-@wally.route('/background_process_h')
-def background_process_h():
-    global admin_flag
-    ans = request.args.to_dict()['s']
-    if ans == "CS_W0rld_D0min8i0n":
-        admin_flag = True
-        return jsonify(result = "true")
-    else:
-        return jsonify(result = "h")

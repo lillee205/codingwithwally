@@ -16,28 +16,37 @@
 
 <body class="noselect">
     <div class="triangle">
-        <div id="popup">
+        <div class="popup" id="addPopup">
             <h2>ADD NEW CODING PROBLEM?</h2>
-            <div class="btn hvr-grow">yes</div>
-            <div class="btn hvr-grow">no</div>
+            <div class="btn hvr-grow addBtn">yes</div>
+            <div class="btn hvr-grow addBtn">no</div>
 
         </div>
-        <h1 class="animate fadeInDown one">CODING WITH W<span id = "s">A</span>LLY</h1>
+        <div class="popup" id="delPopup">
+            <h2>DELETE PROBLEM?</h2>
+            <div class="btn hvr-grow delBtn">yes</div>
+            <div class="btn hvr-grow delBtn">no</div>
+        </div>
+        <h1 class="animate fadeInDown one">CODING WITH WALLY</h1>
         <p class="animate fadeInDown one" style="width: 80%; margin: auto;">for all your coding needs!</p>
         <div id="tags" class="animate fadeInDown one">
-            {% set htmltags = ['python', 'java', 'easy', 'medium', 'hard', 'strings', 'booleans', 'arrays', 'recursion', 'ints',
-            'higher-order functions'] %}
-            {% for tag in htmltags %}
+            {% for tag in tagList %}
             <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">{{tag}}</div>
             {% endfor %}
 
         </div>
         <div id="flex" class="animate fadeInDown one">
-            <div class="plus" id = "plus">
+            {% if admin == 1 %}
+            <div class="plus" id="plus">
             </div>
+            {% endif %}
             {% for key, value in problems.items() %}
-            <a href="{{ url_for('wally.change_type', problem_pg = key)}}" class="flexchild">
-                <h4>{{key}}</h4>
+            <a class="flexchild">
+                {% if admin == 1 %}
+                <span class="x">&times;</span>
+                {% endif %}
+                <h4 style="display: inline-block;">{{key}}</h4>
+
                 <div id="tagsSmallFlex">
                     {% for tag in problems[key]['tags'] %}
                     <div data-value="{{tag}}" class="tagsSmall">{{tag}}</div>
@@ -51,33 +60,54 @@
             style="display: inline-block;">
             <input type="hidden" id="hiddenChoose" name="hiddenChoose" value="" />
         </form>
+        <a href = "/logout" id="logoutBtn" class="hvr-overline-from-center"> logout
+            <img src="{{url_for('static', filename = 'assets/power.png') }}" id="logoutIcon"></img>
+        </a>
     </div>
 
     <script type="text/javascript">
-        $("#s").click(function(){
-            h = prompt("h")
-            $.getJSON('/background_process_h', {
-                s: h,
-            }, function(data) {
-                if (data.result == "true"){
-                    window.location.href = "/scriptingforall"
-                }
-            })
-         })
-        $("#plus").click(function(){
-            $('#popup').fadeIn("fast")
-        })
-        $(".btn").click(function(){
-            if ($(this)[0].innerText == "yes"){
-                window.location.href = "/addProb";
-            }
-            else{
-                $('#popup').fadeOut("fast")
-            }
-        })
 
         var activeTags = []
         $(function () {
+            //redirect to right problem pg
+            $('.flexchild').click(function (e) {
+                e.preventDefault()
+                window.location.href = "/prob/" + $(this).children('h4').text()
+            })
+            //admin delete
+            var currFunc = ""
+            $('.x').click(function (e) {
+                currFunc = $(this).parent().children('h4').text()
+                $('#delPopup').fadeIn("fast")
+                e.stopPropagation();
+            })
+            $(".delBtn").click(function () {
+                if ($(this)[0].innerText == "yes") {
+                    window.location.href = "/";
+                    $.getJSON('/background_process_delete', {
+                        func_name: currFunc,
+                    }, function (data) {
+                        currFunc = ""
+                    })
+                }
+                else {
+                    currFunc = ""
+                    $('#delPopup').fadeOut("fast")
+                }
+            })
+            //admin add
+            $("#plus").click(function () {
+                console.log("h")
+                $('#addPopup').fadeIn("fast")
+            })
+            $(".addBtn").click(function () {
+                if ($(this)[0].innerText == "yes") {
+                    window.location.href = "/addProb";
+                }
+                else {
+                    $('#addPopup').fadeOut("fast")
+                }
+            })
             var yellow = "rgb(255, 181, 49)"
             var pink = "rgb(220, 37, 106)"
             $(".tag").click(function () { // filtering system
@@ -122,6 +152,7 @@
                 }
 
             })
+
         })
     </script>
 </body>

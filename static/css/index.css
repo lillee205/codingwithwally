@@ -137,8 +137,7 @@ a:-webkit-any-link {
 .plus:hover{
     cursor: pointer;
 }
-
-#popup{
+.popup{
     display: none;
     position: fixed;
     z-index: 50;
@@ -164,4 +163,25 @@ h2{
 }
 .btn:hover{
     cursor: pointer;
+}
+
+#logoutBtn{
+    box-shadow: 0px 0px 28px -6px rgba(98, 34, 23, 0.61);
+    background-color: rgb(20, 20, 20);
+    position: fixed;
+    left: 3vh;
+    bottom: 3vh;
+    padding: 1em;
+    border-radius: 5px;
+    vertical-align: middle;
+
+}
+#logoutBtn:hover{
+    cursor: pointer;
+}
+#logoutIcon{
+    vertical-align: middle;
+    height: 3vh;
+    width: 3vh;
+    display: inline-block;
 }

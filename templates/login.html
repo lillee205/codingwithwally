@@ -1,0 +1,13 @@
+{% extends "logregbase.html" %}
+    {% block content %}
+    <h1>login</h1>
+    <form method = "post" action = "{{ url_for('wally.login') }}">
+        {{ form.csrf_token }}
+        {{ with_errors(form.email, placeholder = "email") }}
+        {{ with_errors(form.password,  placeholder="password") }}
+        <a href="/register">don't have an account? make one here</a>
+
+        <input type = "submit" value = "submit" id = "submitBtn" class ="hvr-grow">
+    </form>
+
+    {% endblock %}
