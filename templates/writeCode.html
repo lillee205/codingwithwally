@@ -43,14 +43,14 @@
 
 {% block content %}
 <form>
-	<div id="jsEditor">def {{func_call}}:
+	<div id="jsEditor" class="animate fadeInDown one">def {{func_call}}:
 	</div>
 	<script type="text/javascript">
 		var editor = ace.edit("jsEditor");
 		editor.setTheme("ace/theme/monokai");
 		editor.session.setMode("ace/mode/python");
 	</script>
-	<input class="submitbtn" id="submitCode" type="submit" value="submit" style = "margin-top: 1.2em;"/>
+	<input class=" submitbtn animate fade one" id="submitCode" type="submit" value="submit" style = "margin-top: 1.2em;"/>
 </form>
 {% endblock %}
 
@@ -73,5 +73,8 @@
 	</tr>
 	{% endfor %}
 </table>
+
+{% endblock %}
+{% block results %}
 <p id="result" style="color:white"></p>
 {% endblock %}

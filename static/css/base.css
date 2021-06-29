@@ -1,31 +1,41 @@
-html,
-body {
+:root {
+    --darkBlack: rgb(20, 20, 20);
+    --darkGray: rgb(39, 40, 34);
+    --marigold: rgb(255, 181, 49);
+
+}
+
+html, body {
     font-family: "Verdana", sans-serif;
     overflow: hidden;
     height: 100%;
-    background: linear-gradient(rgb(39, 40, 34), rgb(20,20,20));
+    background: linear-gradient(to bottom right, var(--darkGray) 0%, var(--darkBlack) 50%, rgb(255, 181, 49) 50%, rgb(255, 181, 49) 100%);
     color: white;
     cursor: default;
     margin: 0;
+    position: relative;
+    z-index: -10;
 }
 
 #sidebar {
     height: 100vh;
     /* Full-height: remove this if you want "auto" height */
-    width: 200px;
+    width: 48px;
     /* Set the width of the sidebar */
     position: fixed;
     /* Fixed Sidebar (stay in place on scroll) */
-    z-index: 1;
+    z-index: 100;
     /* Stay on top */
     top: 0;
     /* Stay at the top */
     left: 0;
-    background-color: rgb(20, 20, 20);
+    background-color: var(--darkBlack);
     /* Black */
     overflow-x: hidden;
     /* Disable horizontal scroll */
     padding-top: 20px;
+    white-space: nowrap;
+    transition: 0.5s;
 }
 
 .clicky {
@@ -33,7 +43,7 @@ body {
     padding: 15px 8px 15px 16px;
     text-decoration: none;
     font-size: 23px;
-    color: rgb(255, 181, 49);
+    color: var(--marigold);
     display: block;
 }
 
@@ -41,44 +51,87 @@ body {
     cursor: pointer;
     transition: background-color 0.2s ease;
     transition: color 0.2s ease;
-    background-color: rgb(255, 181, 49);
+    background-color: var(--marigold);
     color: rgb(39, 40, 34);
 }
+
 #credits {
-    font-size:0.9em;
+    font-size: 0.9em;
     position: absolute;
     padding: 0.9em;
     margin-bottom: 1em;
     bottom: 0;
 }
+
 #main {
     height: 100%;
-    margin-left: 200px;
+    margin-left: 80px;
+    margin-top: 30px;
     /* Same as the width of the sidebar */
     padding: 0px 10px;
+    padding-left: 5px;
 }
 
 #header {
     margin-top: 2vh;
     margin-bottom: 2vh;
-    border-left: solid rgb(255, 181, 49) 0.5em;
-    padding: 0 0.5em;
     font-family: 'Courier New', monospace;
+}
+
+#title {
+    display: inline-block;
+    border-left: solid var(--marigold) 0.5em;
+    background-color: var(--darkGray);
+    border-radius: 5px;
+    padding: 0.4em;
 }
 
 #flexbox {
     display: flex;
     margin-top: 2em;
+    height: 80vh;
 }
 
 #leftcontent {
     width: 45%;
 }
 
+#titleDescription {
+    color: black;
+    background-color: var(--marigold);
+    width: 15%;
+    height: 5vh;
+    line-height: 5vh;
+    position: absolute;
+    left: 10vh;
+    z-index: 5;
+    padding: 0.7em 1.4em;
+    border-radius: 5px;
+}
+
+#description {
+    width: 85%;
+    height: 15vh;
+    padding: 0.7em 1.4em;
+    padding-top: 1.8em;
+    margin-top: 5vh;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    background-color: var(--darkGray);
+    border-radius: 5px;
+}
+
+#tests {
+    margin-top: 5vh;
+    background-color: var(--darkGray);
+    padding: 0.7em 1.4em;
+    border-radius: 5px;
+    height: 33vh;
+    width: 85%;
+}
+
 #rightcontent {
-    height: 51vh;
     padding: 0 1em;
-    border-left: dashed rgb(255, 181, 49) 0.25em;
     flex-grow: 1;
     margin-left: 1em;
 }
@@ -94,18 +147,24 @@ h3 {
     display: inline-block;
     color: gray;
 }
+
 .ace_editor {
     overflow: visible;
     font-family: monospace;
 }
-#jsEditor { 
-    border: 0.2em black solid;
-    height: 45vh;
+
+#jsEditor {
+    background-color: var(--darkGray);
+    z-index: 0;
+    margin-top: 5vh;
+    border: 0.2em transparent solid;
+    border-radius: 5px;
+    height: 61vh;
     width: 95%;
-    font-family : monospace !important;
+    font-family: monospace !important;
     font-size: 16px !important;
-    direction:ltr !important;
-    text-align:left !important;
+    direction: ltr !important;
+    text-align: left !important;
 }
 
 p {
@@ -114,19 +173,26 @@ p {
 }
 
 .submitbtn {
+    position: absolute;
+    right: 8vh;
     font-size: 1em;
-    background-color: rgb(255, 181, 49);
-    border: none;
-    padding: 0.7em;
+    background-color: rgb(32, 32, 32);
+    border: rgb(46, 49, 41) solid 4px;
+    color: rgb(255, 181, 49);
+    padding: 1em 0.8em;
     border-radius: 5px;
     font-family: "Verdana", sans-serif;
+    background-image: -webkit-linear-gradient(left, rgb(32, 32, 32), rgb(32, 32, 32) 5%, rgb(46, 49, 41) 5%, rgb(46, 49, 41) 10%, rgb(32, 32, 32) 10%, rgb(32, 32, 32) 15%, rgb(46, 49, 41) 15%, rgb(46, 49, 41) 20%, rgb(32, 32, 32) 20%, rgb(32, 32, 32) 25%, rgb(46, 49, 41) 25%, rgb(46, 49, 41) 30%, rgb(32, 32, 32) 30%, rgb(32, 32, 32) 35%, rgb(46, 49, 41) 35%, rgb(46, 49, 41) 40%, rgb(32, 32, 32) 40%, rgb(32, 32, 32) 45%, rgb(46, 49, 41) 45%, rgb(46, 49, 41) 50%, rgb(32, 32, 32) 50%, rgb(32, 32, 32) 55%, rgb(46, 49, 41) 55%, rgb(46, 49, 41) 60%, rgb(32, 32, 32) 60%, rgb(32, 32, 32) 65%, rgb(46, 49, 41) 65%, rgb(46, 49, 41) 70%, rgb(32, 32, 32) 70%, rgb(32, 32, 32) 75%, rgb(46, 49, 41) 75%, rgb(46, 49, 41) 80%, rgb(32, 32, 32) 80%, rgb(32, 32, 32) 85%, rgb(46, 49, 41) 85%, rgb(46, 49, 41) 90%, rgb(32, 32, 32) 90%, rgb(32, 32, 32) 95%, rgb(46, 49, 41) 95%, rgb(46, 49, 41) 100%);
+    background-image: linear-gradient(to right, rgb(32, 32, 32), rgb(32, 32, 32) 5%, rgb(46, 49, 41) 5%, rgb(46, 49, 41) 10%, rgb(32, 32, 32) 10%, rgb(32, 32, 32) 15%, rgb(46, 49, 41) 15%, rgb(46, 49, 41) 20%, rgb(32, 32, 32) 20%, rgb(32, 32, 32) 25%, rgb(46, 49, 41) 25%, rgb(46, 49, 41) 30%, rgb(32, 32, 32) 30%, rgb(32, 32, 32) 35%, rgb(46, 49, 41) 35%, rgb(46, 49, 41) 40%, rgb(32, 32, 32) 40%, rgb(32, 32, 32) 45%, rgb(46, 49, 41) 45%, rgb(46, 49, 41) 50%, rgb(32, 32, 32) 50%, rgb(32, 32, 32) 55%, rgb(46, 49, 41) 55%, rgb(46, 49, 41) 60%, rgb(32, 32, 32) 60%, rgb(32, 32, 32) 65%, rgb(46, 49, 41) 65%, rgb(46, 49, 41) 70%, rgb(32, 32, 32) 70%, rgb(32, 32, 32) 75%, rgb(46, 49, 41) 75%, rgb(46, 49, 41) 80%, rgb(32, 32, 32) 80%, rgb(32, 32, 32) 85%, rgb(46, 49, 41) 85%, rgb(46, 49, 41) 90%, rgb(32, 32, 32) 90%, rgb(32, 32, 32) 95%, rgb(46, 49, 41) 95%, rgb(46, 49, 41) 100%);
+    background-position: 0 0;
+    background-size: 100%;
+    -webkit-transition: background 300ms;
+    transition: background 300ms ease-in-out;
 }
 
 .submitbtn:hover {
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    transition: color 0.2s ease;
-    background-color: rgb(248, 156, 40);
+    background-position: 100px;
 }
 
 h2 {
@@ -139,8 +205,13 @@ input[type=text] {
     margin-right: 1em;
     border: none;
     border-radius: 3px;
-    padding: 0.7em 0.5em;
+    padding: 0.6em 0.5em;
     font-family: "Verdana", sans-serif;
+}
+
+#tableDiv {
+    height: 80%;
+    overflow: auto;
 }
 
 table {
@@ -149,13 +220,12 @@ table {
     width: 90%;
     height: auto;
     padding: 0.5em;
-    margin: 0.5em;
+    margin: auto;
     margin-top: 1em;
     text-align: center;
 }
 
-table td,
-table th {
+table td, table th {
     border: white solid 2px;
     padding: 0.6em;
 }

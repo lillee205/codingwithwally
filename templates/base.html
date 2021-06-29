@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/select.css') }}">
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/misc.css') }}">
     <link rel="icon" href="https://cdn.discordapp.com/attachments/574052228206297090/852681325315096587/AAA.png">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script defer src="{{ url_for('static', filename = 'js/helper.js') }}"></script>
@@ -35,53 +35,79 @@
 
     {% block head %}{% endblock %}
 
-    <div id="sidebar" class="noselect">
-        <a class = "clicky" href = "/" id="home">home</a>
-        <a class = "clicky" id="rand">random problem</a>
-        <a class = "clicky" href = "http://endless.horse">help</a>
-        <div id = "credits" style = "position: absolute; bottom: 0;">
-            <p style="color:rgb(83, 85, 78);">created by lilly lee</p>
-            <p style="color:rgb(83, 85, 78)">report bugs <a href = "https://forms.gle/xiuqeZPPeuzarc259">here</a></p>
+    <div id="sidebar" class="noselect" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()">
+        <a class="clicky" href="/" id="home"><i class="fa fa-home" style="margin-right:5px"></i> home</a>
+        <a class="clicky" id="rand"><i class="fa fa-random" style="margin-right:5px"></i> random problem</a>
+        <a class="clicky" href="http://endless.horse"><i class="fa fa-info-circle" style="margin-right:5px"></i>
+            help</a>
+        <a class="clicky" href="https://forms.gle/xiuqeZPPeuzarc259"><i class="fa fa-bug" style="margin-right:5px"></i>
+            report bugs</a>
+        <div id="credits" style="position: absolute; bottom: 0;">
+            <p style="color:rgb(83, 85, 78);margin-left:48px">created by lilly lee</p>
         </div>
     </div>
 
     <div id="main">
 
         <div id="header" class="noselect">
-            <h1>CODING WITH WALLY</h1>
-            <h3>{{function_name}}
-            {% if (author != "" or author != None ) %}
-: {{author}}
-            {% endif %}
-            </h3>       
-            <form name="selectForm" id="selectForm" action="{{ url_for('wally.change_type', problem_pg = function_name) }}" method="post"
+            <div id="title" class="animate fadeInDown one">
+                <h1>CODING WITH WALLY</h1>
+                <h3>
+                    {% if (author != "" and author != None ) %}
+                    : {{author}}
+                    {% endif %}
+                </h3>
+            </div>
+            <form name="selectForm" id="selectForm"
+                action="{{ url_for('wally.change_type', problem_pg = function_name) }}" method="post"
                 style="display: inline-block;">
                 <input type="hidden" id="hiddenSelect" name="hiddenSelect" value="" />
             </form>
-            <div class="custom-select">
+            <div style="display: inline-block; position: relative; z-index: 10000;" class="custom-select animate fade one">
                 <select>
                     {% block options %}
                     {% endblock %}
                 </select>
             </div>
         </div>
-
-        <div style="width:60%;height:22vh;padding-right:1.5em;overflow-y: auto; overflow-wrap:break-word;">
-            {{description|safe}}
-        </div>
-
         <div id="flexbox">
+
             <div class="flexchild" id="leftcontent">
-                {% block content %}{% endblock %}
+                <div id="titleDescription" class="animate fade one">{{function_name}}</div>
+                <div id="description" class="animate fadeInDown one">
+                    {{description|safe}}
+                </div>
+                <div id="tests" class="animate fadeInDown one">
+                    <div id="tableDiv">
+                        {% block answers %}{% endblock %}
+                    </div>
+                    <div id="testbox">
+
+                    {% block results %} {% endblock %}
+                    </div>
+                </div>
             </div>
-            <div class="flexchild" id="rightcontent" style = "overflow-y:auto;">
-                <h2>results</h2>
-                {% block answers %}{% endblock %}
+            <div class="flexchild" id="rightcontent" style="overflow-y:auto;">
+                {% block content %}{% endblock %}
+
             </div>
         </div>
-        
     </div>
+    <script type="text/javascript">
+        var mini = true;
+        function toggleSidebar() {
+            if (mini) {
+                console.log("opening sidebar");
+                document.getElementById("sidebar").style.width = "260px";
+                this.mini = false;
+            } else {
+                console.log("closing sidebar");
+                document.getElementById("sidebar").style.width = "48px";
+                this.mini = true;
+            }
+        }
 
+    </script>
 </body>
 
 </html>

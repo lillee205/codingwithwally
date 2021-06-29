@@ -15,55 +15,53 @@
 </head>
 
 <body class="noselect">
-    <div class="triangle">
-        <div class="popup" id="addPopup">
-            <h2>ADD NEW CODING PROBLEM?</h2>
-            <div class="btn hvr-grow addBtn">yes</div>
-            <div class="btn hvr-grow addBtn">no</div>
+    <div class="popup" id="addPopup">
+        <h2>ADD NEW CODING PROBLEM?</h2>
+        <div class="btn hvr-grow addBtn">yes</div>
+        <div class="btn hvr-grow addBtn">no</div>
 
-        </div>
-        <div class="popup" id="delPopup">
-            <h2>DELETE PROBLEM?</h2>
-            <div class="btn hvr-grow delBtn">yes</div>
-            <div class="btn hvr-grow delBtn">no</div>
-        </div>
-        <h1 class="animate fadeInDown one">CODING WITH WALLY</h1>
-        <p class="animate fadeInDown one" style="width: 80%; margin: auto;">for all your coding needs!</p>
-        <div id="tags" class="animate fadeInDown one">
-            {% for tag in tagList %}
-            <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">{{tag}}</div>
-            {% endfor %}
-
-        </div>
-        <div id="flex" class="animate fadeInDown one">
-            {% if admin == 1 %}
-            <div class="plus" id="plus">
-            </div>
-            {% endif %}
-            {% for key, value in problems.items() %}
-            <a class="flexchild">
-                {% if admin == 1 %}
-                <span class="x">&times;</span>
-                {% endif %}
-                <h4 style="display: inline-block;">{{key}}</h4>
-
-                <div id="tagsSmallFlex">
-                    {% for tag in problems[key]['tags'] %}
-                    <div data-value="{{tag}}" class="tagsSmall">{{tag}}</div>
-                    {% endfor %}
-                </div>
-            </a>
-            {% endfor %}
-            <p id="nothing" style="display: none;">nothing was found except for the infinite expanse of the void.</p>
-        </div>
-        <form name="chooseForm" id="chooseForm" action="{{ url_for('wally.index') }}" method="post"
-            style="display: inline-block;">
-            <input type="hidden" id="hiddenChoose" name="hiddenChoose" value="" />
-        </form>
-        <a href = "/logout" id="logoutBtn" class="hvr-overline-from-center"> logout
-            <img src="{{url_for('static', filename = 'assets/power.png') }}" id="logoutIcon"></img>
-        </a>
     </div>
+    <div class="popup" id="delPopup">
+        <h2>DELETE PROBLEM?</h2>
+        <div class="btn hvr-grow delBtn">yes</div>
+        <div class="btn hvr-grow delBtn">no</div>
+    </div>
+    <h1 class="animate fadeInDown one">CODING WITH WALLY</h1>
+    <p class="animate fadeInDown one" style="width: 80%; margin: auto;">for all your coding needs!</p>
+    <div id="tags" class="animate fadeInDown one">
+        {% for tag in tagList %}
+        <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">{{tag}}</div>
+        {% endfor %}
+
+    </div>
+    <div id="flex" class="animate fadeInDown one">
+        {% if admin == 1 %}
+        <div class="plus" id="plus">
+        </div>
+        {% endif %}
+        {% for key, value in problems.items() %}
+        <a class="flexchild">
+            {% if admin == 1 %}
+            <span class="x">&times;</span>
+            {% endif %}
+            <h4 style="display: inline-block;">{{key}}</h4>
+
+            <div id="tagsSmallFlex">
+                {% for tag in problems[key]['tags'] %}
+                <div data-value="{{tag}}" class="tagsSmall">{{tag}}</div>
+                {% endfor %}
+            </div>
+        </a>
+        {% endfor %}
+        <p id="nothing" style="display: none;">nothing was found except for the infinite expanse of the void.</p>
+    </div>
+    <form name="chooseForm" id="chooseForm" action="{{ url_for('wally.index') }}" method="post"
+        style="display: inline-block;">
+        <input type="hidden" id="hiddenChoose" name="hiddenChoose" value="" />
+    </form>
+    <a href="/logout" id="logoutBtn" class="hvr-overline-from-center"> logout
+        <img src="{{url_for('static', filename = 'assets/power.png') }}" id="logoutIcon"></img>
+    </a>
 
     <script type="text/javascript">
 

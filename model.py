@@ -1,7 +1,10 @@
+from flask_wtf.recaptcha import validators
 from initialize import db
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, HiddenField, SelectMultipleField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
+from wtforms import widgets
+from wtforms.widgets import TextArea
 
 class Problem(db.Model):
     __table_args__ = {'extend_existing': True}
@@ -52,4 +55,22 @@ class RegisterForm(FlaskForm):
     email = StringField('email', validators = [InputRequired(), Email(check_deliverability = True), HMCEmail()])
     password = PasswordField('password', validators = [InputRequired(), Length(min=8, max = 20)])
 
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
 
+
+
+class ProblemForm(FlaskForm):
+    author = StringField('author')
+    desc = HiddenField('desc', validators = [InputRequired(), Length(min = 50, max = 150)] )
+    tags = MultiCheckboxField('tags', validators = [InputRequired()])
+    code = HiddenField('code', validators=[InputRequired()])
+    testInputs = HiddenField('testInputs', validators = [InputRequired()])
+    testOutputs = HiddenField('testOutputs', validators = [InputRequired()])
+    buggyCode = HiddenField('buggycode')
+    
+    
+
+
+    

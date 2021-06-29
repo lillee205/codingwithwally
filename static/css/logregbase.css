@@ -1,21 +1,23 @@
+:root {
+    --darkBlack: rgb(20, 20, 20);
+    --darkGray: rgb(39, 40, 34);
+    --marigold: rgb(255, 181, 49);
+
+}
+
+
 body, html {
     font-family: "Verdana", sans-serif;
     overflow: hidden;
     height: 100%;
     color: white;
+    background: linear-gradient(to bottom right, rgb(39, 40, 34) 0%, rgb(20, 20, 20) 50%, rgb(255, 181, 49) 50%, rgb(255, 181, 49) 100%);
+
     cursor: default;
     margin: 0;
     text-align: center;
 }
 
-.triangle {
-    min-height: 100vh;
-    width: 100vw;
-    position: absolute;
-    left: 0;
-    top: 0;
-    background: linear-gradient(to bottom right, rgb(39, 40, 34) 0%, rgb(20, 20, 20) 50%, rgb(255, 181, 49) 50%, rgb(255, 181, 49) 100%);
-}
 
 #box {
     position: absolute;
@@ -26,7 +28,7 @@ body, html {
     margin: auto;
     height: 60vh;
     width: 24vw;
-    background-color: rgb(20, 20, 20);
+    background-color: var(--darkGray);
     box-shadow: 0px 0px 28px -6px rgb(98 34 23 / 61%);
     padding: 2em;
     border-radius: 10px;

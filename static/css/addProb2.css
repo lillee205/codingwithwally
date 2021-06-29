@@ -1,0 +1,86 @@
+#box {
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    height: 70vh;
+    width: 40vw;
+    background-color: var(--darkGray);
+    box-shadow: 0px 0px 28px -6px rgb(98 34 23 / 61%);
+    padding: 2em;
+    border-radius: 10px;
+    text-align: center;
+    transition: 0.5s;
+}
+h2{
+    display: inline-block;
+    margin-bottom: 4vh;
+}
+#stepflexbox{
+    display: flex;
+}
+.stepflex{
+    flex: 0 2 auto;
+    flex-basis:100%;
+}
+
+#steps3to5{
+    display: flex;
+}
+#paginator{
+    position: absolute;
+    bottom: 2vh;
+    margin: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 50%;
+
+  }
+  
+  a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  
+  .previous {
+    background-color: #f1f1f1;
+    color: black;
+  }
+  
+  .next {
+    background-color: #04AA6D;
+    color: white;
+  }
+#jsEditor{
+    height: 50vh;
+    width: auto;
+    overflow:auto;
+}
+#editor{
+    height: 40vh;
+    overflow-y: auto;
+
+}
+#step3{
+    display: flex;
+}
+.flexchild{
+    flex:1;
+}
+.ql-toolbar{
+    text-align: left;
+}
+
+
+.ql-snow{
+    border:none !important;
+}

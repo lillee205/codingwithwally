@@ -1,0 +1,24 @@
+:root {
+    --darkBlack: rgb(20, 20, 20);
+    --darkGray: rgb(39, 40, 34);
+    --marigold: rgb(255, 181, 49);
+
+}
+
+html, body {
+    font-family: "Roboto", sans-serif;
+    min-height: 100vh;
+    min-width: 100vw;
+    background: linear-gradient(to bottom right, var(--darkGray) 0%, var(--darkBlack) 50%, rgb(255, 181, 49) 50%, rgb(255, 181, 49) 100%);
+    color: white;
+    cursor: default;
+    text-align: center;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url(/static/assets/Roboto-Black.ttf)
+  }
