@@ -7,15 +7,17 @@
     <title>Coding with Wally</title>
     <link rel="icon" href="https://cdn.discordapp.com/attachments/574052228206297090/852681325315096587/AAA.png">
     <link rel="stylesheet" href="{{url_for('static', filename = 'css/root.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/animation.css') }}">
 
-    {% css block %}
+
+    {% block css %}
     {% endblock %}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    {% script block %}
-    {% end block}
+    {% block script %}
+    {% endblock %}
 </head>
-<body>
-    {% body block %} 
-    {% end block}
+<body class = "noselect">
+    {% block body %} 
+    {% endblock %}
 </body>
 </html>

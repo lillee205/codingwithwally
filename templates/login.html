@@ -1,13 +1,25 @@
 {% extends "logregbase.html" %}
-    {% block content %}
-    <h1>login</h1>
-    <form method = "post" action = "{{ url_for('wally.login') }}">
-        {{ form.csrf_token }}
-        {{ with_errors(form.email, placeholder = "email") }}
-        {{ with_errors(form.password,  placeholder="password") }}
-        <a href="/register">don't have an account? make one here</a>
+{% block content %}
+{% macro with_errors(field) %}
+<div class="form_field">
+    {% if field.errors %}
+    {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
+    {{ field(class=css_class) }}
+    <ul class="errors">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
+    {% else %}
+    {{ field(**kwargs) }}
+    {% endif %}
+</div>
+{% endmacro %}
+<h1>login</h1>
+<form method="post" action="{{ url_for('wally.login') }}">
 
-        <input type = "submit" value = "submit" id = "submitBtn" class ="hvr-grow">
-    </form>
+    {{ form.csrf_token }}
+    {{ with_errors(form.email, placeholder = "email") }}
+    {{ with_errors(form.password, placeholder="password") }}
+    <a href="/register">don't have an account? make one here</a>
 
-    {% endblock %}
+    <input type="submit" value="submit" id="submitBtn" class="hvr-grow">
+</form>
+
+{% endblock %}

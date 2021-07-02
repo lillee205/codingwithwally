@@ -1,0 +1,78 @@
+{% extends "probBase.html" %}
+{% block head %}
+<script type=text/javascript>
+	$(function() {
+        //when you press enter
+		$('#bugInput').bind('keypress', function(e){
+		if(e.which == 13){
+
+			$.getJSON('/background_process_testBugs', {
+				input : JSON.stringify($(this).val())
+		}, function(data) {
+			res = data.result 
+			if (res.includes("Error")){
+                console.log("error")
+				$("#bugOutput").text("Error")
+                $("#result").text(res)
+			}
+			else{
+                console.log("output")
+                console.log(res)
+                $("#bugOutput").text(res)
+                $("#result").text("")
+
+            }
+		});
+		return false;
+		}
+		});
+	});
+	</script>
+{% endblock %}
+{% block options %}
+<option value="selectOption">select option</option>
+<option value="writeCode" >write code</option>
+{% if testInputs|length %}
+<option value="testInputs">test inputs</option>
+{% endif %}
+{% if testOutputs|length %}
+<option value="testOutputs">test outputs</option>
+{% endif %}
+<option value="testBugs" selected>test bugs</option>
+
+{% endblock %}
+
+{% block content %}
+<form>
+	<div id="buggyEditor" class="editor animate fadeInDown one">
+	</div>
+	<script type="text/javascript">
+		var editor = ace.edit("buggyEditor");
+		editor.setTheme("ace/theme/monokai");
+		editor.session.setMode("ace/mode/python");
+        editor.session.setValue({{buggyCode|tojson}})
+        editor.setReadOnly(true);
+
+
+	</script>
+</form>
+{% endblock %}
+
+{% block answers %}
+<p>
+    The code to your right has some bugs in it. Enter inputs/edge cases that would generate errors. Play around, and see how you can break the code!
+</p>
+<table>
+	<tr>
+		<th>input</th>
+		<th>output</th>
+	<tr>
+		<td><input id = "bugInput" value = "" type="text" style="margin-right: 0;" /></td>
+        <td id ="bugOutput"></td>
+	</tr>
+</table>
+
+{% endblock %}
+{% block results %}
+<p id="result" style="color:white"></p>
+{% endblock %}

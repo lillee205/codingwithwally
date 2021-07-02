@@ -2,23 +2,125 @@
     --darkBlack: rgb(20, 20, 20);
     --darkGray: rgb(39, 40, 34);
     --marigold: rgb(255, 181, 49);
-
+    --pink: rgb(220, 37, 106);
 }
 
 html, body {
     font-family: "Roboto", sans-serif;
-    min-height: 100vh;
-    min-width: 100vw;
+    letter-spacing: 0.025em;
+    height: 100%;
+    width: 100%;
     background: linear-gradient(to bottom right, var(--darkGray) 0%, var(--darkBlack) 50%, rgb(255, 181, 49) 50%, rgb(255, 181, 49) 100%);
     color: white;
-    cursor: default;
     text-align: center;
     margin: 0;
     overflow-x: hidden;
     overflow-y: hidden;
+    position: fixed;
+    z-index: -10;
+}
+
+h1 {
+
+    font-family: 'Roboto', sans-serif;
+    font-weight: normal;
+    font-size: 2.6em;
+    text-transform: lowercase;
+}
+
+h2 {
+    font-family: 'Courier New', monospace;
+    font-weight:bold;
+    text-transform: lowercase;
+}
+
+h4 {
+    font-family: 'Courier New', monospace;
+    margin: 0.3em;
+    text-transform: lowercase;
+}
+
+.blackbox {
+    background-color: var(--darkGray);
+    padding: 0.5em;
+    border-radius: 8px;
+    box-shadow: 0px 0px 28px -6px rgb(98 34 23 / 61%);
+    margin: auto;
+}
+
+#jsEditor {
+    background-color: var(--darkGray);
+    z-index: 0;
+    margin-top: 5vh;
+    border: 0.2em transparent solid;
+    border-radius: 5px;
+    height: 61vh;
+    width: 95%;
+    font-family: monospace !important;
+    font-size: 16px !important;
+    direction: ltr !important;
+    text-align: left !important;
+}
+#tableDiv {
+    height: 80%;
+    overflow: auto;
+}
+
+input[type=text] {
+    border: none;
+    border-radius: 3px;
+    padding: 0.6em 0.5em;
+}
+
+table {
+    border-collapse: collapse;
+    border-style: hidden;
+    width: 90%;
+    height: auto;
+    padding: 0.5em;
+    margin: auto;
+    margin-top: 1em;
+    text-align: center;
+}
+
+table td, table th {
+    border: white solid 2px;
+    padding: 0.6em;
+}
+.noselect {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Old versions of Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(26, 26, 26);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #dc256a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #f55893;
 }
 
 @font-face {
     font-family: Roboto;
-    src: url(/static/assets/Roboto-Black.ttf)
-  }
+    src: url(/static/assets/Roboto-Regular.ttf)
+}
+

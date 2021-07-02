@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "probBase.html" %}
 
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename = 'css/writeCode.css') }}">
@@ -33,8 +33,14 @@
 {% block options %}
 <option value="selectOption">select option</option>
 <option value="writeCode">write code</option>
+{% if testInputs|length %}
 <option value="testInputs" selected>test inputs</option>
+{% endif %}
+{% if testOutputs|length %}
 <option value="testOutputs">test outputs</option>
+{% endif %}
+<option value="testBugs">test bugs</option>
+
 {% endblock %}
 
 {% block content %}
@@ -130,12 +136,12 @@
 		<th>output</th>
 		<th>correct</th>
 	</tr>
-	{%for i in range(tests|length)%}
+	{%for i in range(testInputs|length)%}
 	<tr>
-		{% if tests[i] is string %}
-			<td>"{{tests[i]}}"</td>
+		{% if testInputs[i] is string %}
+			<td>"{{testInputs[i]}}"</td>
 		{% else %}
-			<td>{{tests[i]}}</td>
+			<td>{{testInputs[i]}}</td>
 		{% endif %}
 		<td class="output">
 			<input value = "" type="text" style="margin-right: 0;" />

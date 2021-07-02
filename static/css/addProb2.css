@@ -15,12 +15,18 @@
     text-align: center;
     transition: 0.5s;
 }
+
+input[type=text]{
+    margin: 1.5em 0;
+}
+
 h2{
     display: inline-block;
-    margin-bottom: 4vh;
+    margin-bottom: 1vh;
 }
 #stepflexbox{
     display: flex;
+    justify-content: center;
 }
 .stepflex{
     flex: 0 2 auto;
@@ -57,7 +63,7 @@ a {
   }
   
   .next {
-    background-color: #04AA6D;
+    background-color: var(--pink);
     color: white;
   }
 #jsEditor{
@@ -65,13 +71,29 @@ a {
     width: auto;
     overflow:auto;
 }
+#buggyEditor{
+    background-color: var(--darkGray);
+    z-index: 0;
+    margin: auto;
+    margin-top: 5vh;
+    border: 0.2em transparent solid;
+    border-radius: 5px;
+    height: 55vh;
+    width: 90%;
+    font-family: monospace !important;
+    font-size: 16px !important;
+    direction: ltr !important;
+    text-align: left !important;
+}
 #editor{
     height: 40vh;
+    width: 40vw;
     overflow-y: auto;
 
 }
 #step3{
     display: flex;
+    flex-direction: column;
 }
 .flexchild{
     flex:1;
@@ -83,4 +105,15 @@ a {
 
 .ql-snow{
     border:none !important;
+}
+
+.form-check{
+    margin-bottom: 0.3em;
+}
+.form-check-input{
+    font-size: 3em;
+}
+.form-check-label{
+    font-size: 1em;
+
 }

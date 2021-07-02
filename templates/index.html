@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "root.html" %}
+{% block css %} 
+<link rel="stylesheet" href="{{url_for('static', filename = 'css/index.css') }}">
 
-<head>
-    <title>coding with wally</title>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
+{% block script %}
+<script defer type="text/javascript" src="{{url_for('static', filename = 'js/index.js') }}"></script>
 
-    <link rel="stylesheet" href="{{url_for('static', filename = 'css/index.css') }}">
-    <link rel="stylesheet" href="{{url_for('static', filename = 'css/misc.css') }}">
-    <link rel="icon" href="https://cdn.discordapp.com/attachments/574052228206297090/852681325315096587/AAA.png">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{% endblock %}
 
-</head>
-
-<body class="noselect">
+{% block body %}
     <div class="popup" id="addPopup">
         <h2>ADD NEW CODING PROBLEM?</h2>
         <div class="btn hvr-grow addBtn">yes</div>
@@ -28,13 +22,13 @@
     </div>
     <h1 class="animate fadeInDown one">CODING WITH WALLY</h1>
     <p class="animate fadeInDown one" style="width: 80%; margin: auto;">for all your coding needs!</p>
-    <div id="tags" class="animate fadeInDown one">
+    <div id="tags" class="blackbox animate fadeInDown one">
         {% for tag in tagList %}
         <div class="tag hvr-grow" style="background-color: rgb(220, 37, 106);">{{tag}}</div>
         {% endfor %}
 
     </div>
-    <div id="flex" class="animate fadeInDown one">
+    <div id="flex" class="blackbox animate fadeInDown one">
         {% if admin == 1 %}
         <div class="plus" id="plus">
         </div>
@@ -46,7 +40,7 @@
             {% endif %}
             <h4 style="display: inline-block;">{{key}}</h4>
 
-            <div id="tagsSmallFlex">
+            <div class="tagsSmallFlex">
                 {% for tag in problems[key]['tags'] %}
                 <div data-value="{{tag}}" class="tagsSmall">{{tag}}</div>
                 {% endfor %}
@@ -62,97 +56,4 @@
     <a href="/logout" id="logoutBtn" class="hvr-overline-from-center"> logout
         <img src="{{url_for('static', filename = 'assets/power.png') }}" id="logoutIcon"></img>
     </a>
-
-    <script type="text/javascript">
-
-        var activeTags = []
-        $(function () {
-            //redirect to right problem pg
-            $('.flexchild').click(function (e) {
-                e.preventDefault()
-                window.location.href = "/prob/" + $(this).children('h4').text()
-            })
-            //admin delete
-            var currFunc = ""
-            $('.x').click(function (e) {
-                currFunc = $(this).parent().children('h4').text()
-                $('#delPopup').fadeIn("fast")
-                e.stopPropagation();
-            })
-            $(".delBtn").click(function () {
-                if ($(this)[0].innerText == "yes") {
-                    window.location.href = "/";
-                    $.getJSON('/background_process_delete', {
-                        func_name: currFunc,
-                    }, function (data) {
-                        currFunc = ""
-                    })
-                }
-                else {
-                    currFunc = ""
-                    $('#delPopup').fadeOut("fast")
-                }
-            })
-            //admin add
-            $("#plus").click(function () {
-                console.log("h")
-                $('#addPopup').fadeIn("fast")
-            })
-            $(".addBtn").click(function () {
-                if ($(this)[0].innerText == "yes") {
-                    window.location.href = "/addProb";
-                }
-                else {
-                    $('#addPopup').fadeOut("fast")
-                }
-            })
-            var yellow = "rgb(255, 181, 49)"
-            var pink = "rgb(220, 37, 106)"
-            $(".tag").click(function () { // filtering system
-
-                var val = $(this)[0].innerText //gets tag name
-                var currentColor = $(this).css("background-color")
-                var newColor = ""
-                var currTag = $(this)[0].innerText
-                if (currentColor == pink) {
-                    newColor = yellow
-                    activeTags.push(currTag)
-                }
-                else {
-                    newColor = pink
-                    activeTags.splice(activeTags.indexOf(currTag), 1)
-                }
-
-                $(this).css('background-color', newColor);
-
-                if ($(".tag[style='background-color: rgb(255, 181, 49);']").length == 0) { //if no tags are selected, show all
-                    $('.flexchild').show()
-                }
-                else {
-                    $('.flexchild').hide()
-                    $(".flexchild").each(function () {
-                        tagBox = $(this).children()[1]
-                        tags = []
-                        $(tagBox).children().each(function () {
-                            tags.push($(this)[0].innerText)
-                        })
-                        let checker = (arr, target) => target.every(v => arr.includes(v)); //checks to see if all the tags in activetags are in the current problem tags
-                        if (checker(tags, activeTags)) {
-                            $(this).show()
-                        }
-                    })
-                }
-                if ($(".flexchild:visible").length == 0) { //if no tag results match, then show this message that nothing matches
-                    $('#nothing').show()
-                }
-                else {
-                    $('#nothing').hide()
-                }
-
-            })
-
-        })
-    </script>
-</body>
-
-</html>
+{% endblock %}

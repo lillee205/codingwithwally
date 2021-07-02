@@ -1,36 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "root.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://cdn.discordapp.com/attachments/574052228206297090/852681325315096587/AAA.png">
-    <link rel="stylesheet" href="{{url_for('static', filename = 'css/logregbase.css') }}">
-    <link rel="stylesheet" href="{{url_for('static', filename = 'css/misc.css') }}">
+{% block css %}
+<link rel="stylesheet" href="{{url_for('static', filename = 'css/logregbase.css') }}">
+{% endblock %}
 
-    <title>coding with wally</title>
-</head>
+{% block body %}
 
-<body>
-    {% macro with_errors(field) %}
-    <div class="form_field">
-    {% if field.errors %}
-        {% set css_class = 'has_error ' + kwargs.pop('class', '') %}
-        {{ field(class=css_class) }}
-        <ul class="errors">{% for error in field.errors %}<li>{{ error|e }}</li>{% endfor %}</ul>
-    {% else %}
-        {{ field(**kwargs) }}
-    {% endif %}
-    </div>
-    {% endmacro %}
+<div id="box" class="animate fadeInDown one">
+    {% block content %}
+    {% endblock %}
+</div>
 
-        <div id="box" class="animate fadeInDown one">
-            {% block content %}
-            {% endblock %}
-        </div>
-
-    
-</body>
-
-</html>
+{% endblock %}

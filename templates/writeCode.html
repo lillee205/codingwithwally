@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "probBase.html" %}
 
 {% block head %}
 <script type=text/javascript>
@@ -7,8 +7,6 @@
 		$('input#submitCode').bind('click', function() {
 		$.getJSON('/background_process_writeCode', {
 			code: ace.edit("jsEditor").getValue(),
-			problem: "{{function_name}}",
-			inputs: reformat("{{tests}}"),
 		}, function(data) {
 			if (typeof data.result == "string" && data.result.startsWith("Error")){
 				$("#result").text(data.result)
@@ -20,8 +18,7 @@
 				yourAnswers = data.result
 
 				$( ".output" ).each(function (index){
-					console.log(yourAnswers[index])
-					console.log(typeof yourAnswers[index])
+
 					$(this).text(JSON.stringify(yourAnswers[index]))
 				})
 				$("#result").text("")
@@ -37,8 +34,14 @@
 {% block options %}
 <option value="selectOption">select option</option>
 <option value="writeCode" selected>write code</option>
+{% if testInputs|length %}
 <option value="testInputs">test inputs</option>
+{% endif %}
+{% if testOutputs|length %}
 <option value="testOutputs">test outputs</option>
+{% endif %}
+<option value="testBugs">test bugs</option>
+
 {% endblock %}
 
 {% block content %}
@@ -61,15 +64,15 @@
 		<th>output</th>
 		<th>expected output</th>
 	</tr>
-	{%for i in range(tests|length)%}
+	{%for i in range(testCaseInputs|length)%}
 	<tr>
-		{% if tests[i] is string %}
-			<td>"{{tests[i]}}"</td>
+		{% if testCaseInputs[i] is string %}
+			<td>"{{testCaseInputs[i]}}"</td>
 		{% else %}
-			<td>{{tests[i]}}</td>
+			<td>{{testCaseInputs[i]}}</td>
 		{% endif %}
 		<td class="output"></td>
-		<td>{{ansKey[i]}}</td>
+		<td>{{testCaseOutputs[i]}}</td>
 	</tr>
 	{% endfor %}
 </table>

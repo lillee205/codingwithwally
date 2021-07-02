@@ -18,13 +18,10 @@ SQLALCHEMY_ECHO = True
 problem = ""
 contents = ""
 probDict = {}
-# to keep track of inputs and outputs when adding test cases
-addProbInputs = []
-addProbOutputs = []
 
 
 tagList = ['python', 'java', 'easy', 'medium', 'hard', 'strings', 'booleans', 'arrays', 'recursion', 'ints',
-           'higher-order functions', 'test input & output', 'find bugs']
+           'higher-order functions']
 
 
 def initDict():  # adds all problems currently in database to the dictionary probDict
@@ -39,18 +36,24 @@ def addToDict(problem):  # adds one problem to probDict
     global probDict
     probDict[problem.func_name] = problem
     currP = probDict[problem.func_name]
-    probDict[problem.func_name].testInputs = json.loads(currP.testInputs)
-    probDict[problem.func_name].testInputAnswers = json.loads(
-        currP.testInputAnswers)
+    
+    #we wrap input in a tuple so that we can extract multiple parameter arguments using *tuple
+
+    probDict[problem.func_name].testCaseInputs = [(eval(input)) for input in json.loads(
+        currP.testCaseInputs)]
+    probDict[problem.func_name].testCaseOutputs = [eval(output) for output in json.loads(
+        currP.testCaseOutputs)]
+
+    probDict[problem.func_name].testInputs = json.loads(
+        currP.testInputs) if (currP.testInputs != None and currP.testInputs != "") else []
+    probDict[problem.func_name].testOutputs = json.loads(
+        currP.testOutputs) if (currP.testOutputs != None and currP.testOutputs != "") else []
+
     probDict[problem.func_name].tags = json.loads(currP.tags)
 
 
 @wally.route('/', methods=["POST", "GET"])
 def index():
-    global addProbInputs
-    global addProbOutputs
-    addProbInputs = []
-    addProbOutputs = []
 
     global problem
     global contents
@@ -65,35 +68,10 @@ def index():
         return render_template('index.html', problems=probDict, tagList=tagList, admin=session["isAdmin"])
 
 
-@wally.route("/addProb2", methods=["POST", "GET"])
-@admin_required
-def addProb2():
-    global addProbInputs
-    global addProbOutputs
-    global problem
-    global contents
-    problem = ""
-    contents = ""
-
-    global probDict
-    initDict()
-    form = ProblemForm()
-    form.tags.choices = [(tag, tag) for tag in tagList]
-    if form.validate_on_submit():
-
-        tags = json.dumps(form.tags.data)
-        desc = form.desc.data
-
-        print("\n\n\n")
-
-    return render_template('addProb2.html', form=form)
-
-
 @wally.route("/addProb", methods=["POST", "GET"])
 @admin_required
 def addProb():
-    global addProbInputs
-    global addProbOutputs
+
     global problem
     global contents
     problem = ""
@@ -102,31 +80,46 @@ def addProb():
     global probDict
     initDict()
 
-    if request.method == "POST":
-        function = request.form['function']
+    form = ProblemForm()
+    form.tags.choices = [(tag, tag) for tag in tagList]
+
+    if form.validate_on_submit():
+
+        # extract data about function from string code
+        function = form.code.data
         func_call = function[function.index('def') + 4: function.index(':')]
-        author = request.form['author']
         func_name = func_call[:func_call.index("(")]
-        desc = request.form['desc'].replace("background-color: rgb(255, 255, 255);",
-                                            "background-color: transparent;").replace("color: rgb(0, 0, 0);", "color: white;")
 
-        testInputs = json.dumps(addProbInputs)
-        testInputAnswers = json.dumps(addProbOutputs)
-        tags = json.dumps(request.form.getlist('tag'))
+        param = {
+            "function": function,
+            "func_call": func_call,
+            "func_name": func_name,
 
-        prob = Problem(author=author, func_name=func_name, func_call=func_call, desc=desc,
-                       testInputs=testInputs, testInputAnswers=testInputAnswers, tags=tags, function=function)
-        db.session.add(prob)
+            "author": form.author.data,
+            "desc": form.desc.data.replace("background-color: rgb(255, 255, 255);",
+                                           "background-color: transparent;").replace("color: rgb(0, 0, 0);", "color: white;"),
+            "tags": json.dumps(form.tags.data),
+
+            "testCaseInputs": form.testCaseInputs.data,
+            "testCaseOutputs": form.testCaseOutputs.data,
+            "testInputs": form.testInputs.data,
+            "testOutputs": form.testOutputs.data,
+
+            "buggy_function": form.buggyCode.data
+        }
+        prob = Problem(**param)
+
         try:
+            db.session.add(prob)
             db.session.commit()
-        except exc.SQLAlchemyError:
+        except exc.SQLAlchemyError as e:
+            print(e)
             db.session.rollback()
             return redirect(url_for('wally.addProb'))
-        addProbInputs = []
-        addProbOutputs = []
         addToDict(prob)
         return redirect(url_for("wally.index"))
-    return render_template('addProb.html', checks=tagList)
+
+    return render_template('addProb.html', form=form)
 
 
 @wally.route('/register', methods=["POST", "GET"])
@@ -171,29 +164,31 @@ def logout():
 
 @wally.route('/prob/<problem_pg>', methods=["POST", "GET"])
 def change_type(problem_pg):
-    global addProbInputs
-    global addProbOutputs
-    addProbInputs = []
-    addProbOutputs = []
+
     global problem
     global contents
 
     initDict()
 
     if (problem_pg) in probDict:
+        print("yes!")
+        print(problem_pg)
         problem = problem_pg
-    else: 
+    else:
         redirect(url_for('wally.index'))
 
     contents = probDict[problem]
     args = {
-        "author" : contents.author,
-        "function_name" : contents.func_name,
+        "author": contents.author,
+        "function_name": contents.func_name,
         "description": contents.desc,
-        "tests": contents.testInputs,
-        "ansKey" : contents.testInputAnswers,
-        "func_call" : contents.func_call, 
-        "tags" : contents.tags
+        "testCaseInputs": contents.testCaseInputs,
+        "testCaseOutputs": contents.testCaseOutputs,
+        "testInputs": contents.testInputs,
+        "testOutputs": contents.testOutputs,
+        "buggyCode": contents.buggy_function,
+        "func_call": contents.func_call,
+        "tags": contents.tags
     }
 
     if request.method == "POST":
@@ -202,19 +197,21 @@ def change_type(problem_pg):
         if newView == "test inputs":
             return render_template("testInputs.html", **args)
         elif newView == "write code":
-            return render_template("writeCode.html", author=contents.author, function_name=contents.func_name, description=contents.desc, tests=contents.testInputs, ansKey=contents.testInputAnswers, func_call=contents.func_call, tags=contents.tags)
+            return render_template("writeCode.html", **args)
         elif newView == "test outputs":
-            return render_template("testOutputs.html", author=contents.author, function_name=contents.func_name, description=contents.desc, tests=contents.testInputs, ansKey=contents.testInputAnswers, func_call=contents.func_call, tags=contents.tags)
+            return render_template("testOutputs.html", **args)
+        elif newView == "test bugs":
+            return render_template("testBugs.html", **args)
         elif newView == "rand":
             if len(probDict) > 1:
                 choice = random.choice(
                     [key for key in probDict.keys() if key != problem])
                 problem = choice
                 contents = probDict[problem]
-                redirect(url_for('wally.change_type', problem_pg=problem))
-            return render_template("writeCode.html", author=contents.author, function_name=contents.func_name, description=contents.desc, tests=contents.testInputs, ansKey=contents.testInputAnswers, func_call=contents.func_call, tags=contents.tags)
+                
+            return redirect(url_for('wally.change_type', problem_pg=problem))
         else:
-            return render_template('index.html', problems=probDict, tagList=tagList)
+            return redirect(url_for('wally.index'))
 
     return render_template("writeCode.html", **args)
 
@@ -239,12 +236,15 @@ def background_process_writeCode():
     code = request.args.get('code')
     try:
         exec(code)
-        testInputsJSON = json.loads(request.args.get('inputs'))
         testAns = []
-        for input in testInputsJSON:
-            testAns += [eval(contents.func_name + "({})".format(input))]
+        for input in contents.testCaseInputs:
+            print(str(input) + "\n\n\n")
+            print(*input)
+            print((contents.func_name + "({})".format(*input)))
+            testAns += [eval(contents.func_name)(*input)]
         return jsonify(result=testAns)
     except Exception as e:
+        traceback.print_exc()
         return jsonify(result="Error: " + str(e))
 
 
@@ -287,16 +287,12 @@ def background_process_testOutputs():
 
 @wally.route('/background_process_testCode')
 def background_process_testCode():
-    global addProbInputs
-    global addProbOutputs
-
-    input = request.args.to_dict()['input']
-    output = json.loads(request.args.to_dict()['output'])
+    input = (eval(json.loads(request.args.to_dict()['input'])))
+    if type(input) != tuple:
+        input = (input,)
+    output = eval(json.loads(request.args.to_dict()['output']))
     code = request.args.to_dict()['code']
     func_call = code[4:code.index("(")]
-
-    addProbInputs += [json.loads(input)]
-    addProbOutputs += [output]
 
     try:
         exec(code)  # try just running the code
@@ -305,8 +301,10 @@ def background_process_testCode():
         return jsonify(result="Error: " + str(e))
     try:
         # try running code w/ given input
-        calculatedAns = eval("{}({})".format(func_call, input))
+        print(input)
+        calculatedAns = (eval(func_call))(*input)
     except Exception as e:
+        traceback.print_exc()
         return jsonify(result="Error: " + str(e))
     if calculatedAns != output:
         return jsonify(result="Error: calculated output expected to be {}, but your output was {}.".format(calculatedAns, output))
@@ -320,3 +318,17 @@ def background_process_checkFuncName():
         return jsonify(result="valid")
     else:
         return jsonify(result="invalid")
+
+
+@wally.route('/background_process_testBugs')
+def background_process_testBugs():
+    global contents
+    input = json.loads(request.args.to_dict()['input'])
+
+    exec(contents.buggy_function)
+
+    try:
+        ans = eval("{}({})".format(contents.func_name, input))
+        return jsonify(result=json.dumps(ans))
+    except Exception as e:
+        return jsonify(result="Error: " + str(e))

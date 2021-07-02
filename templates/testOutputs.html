@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "probBase.html" %}
 
 {% block head %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -32,8 +32,14 @@
 {% block options %}
 	<option value = "selectOption">select option</option>
     <option value = "writeCode" >write code</option>
-    <option value = "testInputs">test inputs</option>
-    <option value = "testOutputs" selected>test outputs</option> 
+	{% if testInputs|length %}
+	<option value="testInputs">test inputs</option>
+	{% endif %}
+	{% if testOutputs|length %}
+	<option value="testOutputs" selected>test outputs</option>
+	{% endif %}
+	<option value="testBugs">test bugs</option>
+
 {% endblock %}
 
 {% block content %}
@@ -129,15 +135,15 @@
 		<th>output</th>
 		<th>correct</th>
 	</tr>
-	{%for i in range(ansKey|length)%}
+	{%for i in range(testOutputs|length)%}
 	<tr>
 		<td class="input">
 			<input value = "" type="text" style="margin-right: 0;" />
 		</td>
-		{% if ansKey[i] is string %}
-			<td>"{{ansKey[i]}}"</td>
+		{% if testOutputs[i] is string %}
+			<td>"{{testOutputs[i]}}"</td>
 		{% else %}
-			<td>{{ansKey[i]}}</td>
+			<td>{{testOutputs[i]}}</td>
 		{% endif %}
 
 		<td class="check"></td>
