@@ -10,7 +10,7 @@
 			rowEl = ($(this).parent().children())
 			$.getJSON('/background_process_testInputs', {
 				output: $(this).children()[0].value,
-				input: rowEl[0].innerText,
+				input: rowEl[0].innerText.slice(1, -1),
 		}, function(data) {
 			res = data.result 
 			if (res == "true"){
@@ -39,7 +39,9 @@
 {% if testOutputs|length %}
 <option value="testOutputs">test outputs</option>
 {% endif %}
-<option value="testBugs">test bugs</option>
+{% if buggyCode|length %}
+<option value="testBugs" >test bugs</option>
+{% endif %}
 
 {% endblock %}
 

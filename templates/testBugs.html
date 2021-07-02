@@ -38,7 +38,9 @@
 {% if testOutputs|length %}
 <option value="testOutputs">test outputs</option>
 {% endif %}
+{% if buggyCode|length %}
 <option value="testBugs" selected>test bugs</option>
+{% endif %}
 
 {% endblock %}
 

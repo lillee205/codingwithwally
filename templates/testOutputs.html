@@ -38,8 +38,10 @@
 	{% if testOutputs|length %}
 	<option value="testOutputs" selected>test outputs</option>
 	{% endif %}
-	<option value="testBugs">test bugs</option>
-
+	{% if buggyCode|length %}
+	<option value="testBugs" >test bugs</option>
+	{% endif %}
+	
 {% endblock %}
 
 {% block content %}

@@ -13,12 +13,13 @@ var quill = new Quill("#editor", {
     placeholder: 'Write a description of your prompt. Be as explicit as you can! 50 characters min.'
 
 })
-quill.on('text-change', () => {
-    $('#desc').val(quill.root.innerHTML)
-});
 
 $(function () {
     $('#myform').submit(function (e) {
+        //pass in value for description to form. take off any whitespace at end.
+        var descVal = quill.root.innerHtml.trim()
+        descVal = descVal.endsWith('<p><br></p>') ? descVal.slice(1,-11) : descVal
+        $('#desc').val(quill.root.innerHTML.trim())
         //set value of hidden fields for wtforms
         var testCaseInputList = []
         var testCaseOutputList = []
