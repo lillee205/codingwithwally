@@ -38,20 +38,21 @@ def addToDict(problem):  # adds one problem to probDict
     currP = probDict[problem.func_name]
 
     # we wrap input in a tuple so that we can extract multiple parameter arguments using *tuple
-
-    probDict[problem.func_name].testCaseInputs = [(eval(input)) for input in json.loads(
+    print(currP.testCaseInputs)
+    print(type(currP.testCaseInputs))
+    probDict[problem.func_name].testCaseInputs = [(eval(input)) if type(eval(input)) == tuple else (eval(input),) for input in json.loads(
         currP.testCaseInputs)]
-    probDict[problem.func_name].testCaseOutputs = [eval(output) for output in json.loads(
+    probDict[problem.func_name].testCaseOutputs = [(eval(output)) if type(eval(output)) == tuple else (eval(output),) for output in json.loads(
         currP.testCaseOutputs)]
 
-    probDict[problem.func_name].testInputs = [(eval(input)) for input in json.loads(
+    probDict[problem.func_name].testInputs = [(eval(input)) if type(eval(input)) == tuple else (eval(input),) for input in json.loads(
         currP.testInputs)] if (currP.testInputs != None and currP.testInputs != "") else []
-    probDict[problem.func_name].testOutputs = [eval(output) for output in json.loads(
+    probDict[problem.func_name].testOutputs = [(eval(output)) if type(eval(output)) == tuple else (eval(output),) for output in json.loads(
         currP.testOutputs)] if (currP.testOutputs != None and currP.testOutputs != "") else []
 
     probDict[problem.func_name].tags = json.loads(currP.tags)
-    probDict[problem.func_name].buggy_function = currP.buggy_function if currP.buggy_function.strip() != currP.function.strip() else ""
-
+    probDict[problem.func_name].buggy_function = currP.buggy_function if currP.buggy_function.strip(
+    ) != currP.function.strip() else ""
 
 
 @ wally.route('/', methods=["POST", "GET"])
@@ -60,8 +61,8 @@ def index():
     global problem
     global contents
     global probDict
-    problem=""
-    contents=""
+    problem = ""
+    contents = ""
     initDict()
     initAdminAcc()
     if "user" not in session:
@@ -76,23 +77,23 @@ def addProb():
 
     global problem
     global contents
-    problem=""
-    contents=""
+    problem = ""
+    contents = ""
 
     global probDict
     initDict()
 
-    form=ProblemForm()
-    form.tags.choices=[(tag, tag) for tag in tagList]
+    form = ProblemForm()
+    form.tags.choices = [(tag, tag) for tag in tagList]
 
     if form.validate_on_submit():
 
         # extract data about function from string code
-        function=form.code.data
-        func_call=function[function.index('def') + 4: function.index(':')]
-        func_name=func_call[:func_call.index("(")]
+        function = form.code.data
+        func_call = function[function.index('def') + 4: function.index(':')]
+        func_name = func_call[:func_call.index("(")]
 
-        param={
+        param = {
             "function": function,
             "func_call": func_call,
             "func_name": func_name,
@@ -109,7 +110,8 @@ def addProb():
 
             "buggy_function": form.buggyCode.data
         }
-        prob=Problem(**param)
+        prob = Problem(**param)
+        db.session.rollback()
 
         try:
             db.session.add(prob)
@@ -120,18 +122,17 @@ def addProb():
             return redirect(url_for('wally.addProb'))
         addToDict(prob)
         return redirect(url_for("wally.index"))
-
     return render_template('addProb.html', form=form)
 
 
 @ wally.route('/register', methods=["POST", "GET"])
 def register():
-    form=RegisterForm()
+    form = RegisterForm()
 
     if form.validate_on_submit():
-        hashed_pass=bcrypt.generate_password_hash(
+        hashed_pass = bcrypt.generate_password_hash(
             form.password.data).decode('utf-8')
-        newUser=User(email=form.email.data, password=hashed_pass)
+        newUser = User(email=form.email.data, password=hashed_pass)
         db.session.add(newUser)
         try:
             db.session.commit()
@@ -145,14 +146,14 @@ def register():
 @ wally.route('/login', methods=["POST", "GET"])
 def login():
     initAdminAcc()
-    form=LoginForm()
+    form = LoginForm()
 
     if form.validate_on_submit():
-        logUser=User.query.filter_by(email=form.email.data).first()
+        logUser = User.query.filter_by(email=form.email.data).first()
         if logUser:
             if bcrypt.check_password_hash(logUser.password, form.password.data):
-                session["user"]=(logUser).email
-                session["isAdmin"]=logUser.admin
+                session["user"] = (logUser).email
+                session["isAdmin"] = logUser.admin
                 return redirect(url_for('wally.index'))
     return render_template("login.html", form=form)
 
@@ -173,26 +174,26 @@ def change_type(problem_pg):
     initDict()
 
     if (problem_pg) in probDict:
-        problem=problem_pg
+        problem = problem_pg
     else:
         redirect(url_for('wally.index'))
 
-    contents=probDict[problem]
-    args={
+    contents = probDict[problem]
+    args = {
         "author": contents.author,
         "function_name": contents.func_name,
         "description": contents.desc,
-        "testCaseInputs": contents.testCaseInputs,
-        "testCaseOutputs": contents.testCaseOutputs,
-        "testInputs": contents.testInputs,
-        "testOutputs": contents.testOutputs,
+        "testCaseInputs": [str(list(input))[1:-1] for input in contents.testCaseInputs],
+        "testCaseOutputs": [str(list(output))[1:-1] for output in contents.testCaseOutputs],
+        "testInputs": [str(list(input))[1:-1] for input in contents.testInputs],
+        "testOutputs": [str(list(output))[1:-1] for output in contents.testOutputs],
         "buggyCode": contents.buggy_function,
         "func_call": contents.func_call,
         "tags": contents.tags
     }
 
     if request.method == "POST":
-        newView=request.form.to_dict()['hiddenSelect']
+        newView = request.form.to_dict()['hiddenSelect']
 
         if newView == "test inputs":
             return render_template("testInputs.html", **args)
@@ -204,10 +205,10 @@ def change_type(problem_pg):
             return render_template("testBugs.html", **args)
         elif newView == "rand":
             if len(probDict) > 1:
-                choice=random.choice(
+                choice = random.choice(
                     [key for key in probDict.keys() if key != problem])
-                problem=choice
-                contents=probDict[problem]
+                problem = choice
+                contents = probDict[problem]
 
             return redirect(url_for('wally.change_type', problem_pg=problem))
         else:
@@ -221,7 +222,7 @@ def background_process_delete():
     global probDict
     global problem
     global contents
-    func_name=request.args.to_dict()['func_name']
+    func_name = request.args.to_dict()['func_name']
     Problem.query.filter_by(func_name=func_name).delete()
     probDict.pop(func_name, -1)
     try:
@@ -233,10 +234,10 @@ def background_process_delete():
 
 @ wally.route('/background_process_writeCode')
 def background_process_writeCode():
-    code=request.args.get('code')
+    code = request.args.get('code')
     try:
         exec(code)
-        testAns=[]
+        testAns = []
         for input in contents.testCaseInputs:
             print(str(input) + "\n\n\n")
             print(*input)
@@ -251,33 +252,34 @@ def background_process_writeCode():
 @ wally.route('/background_process_testInputs')
 def background_process_testInputs():
 
-    yourOutput=eval(request.args.to_dict()['output'])
-    input=eval(request.args.to_dict()['input'])
+    yourOutput = eval(request.args.to_dict()['output'])
+    input = eval(request.args.to_dict()['input'])
+    print(input)
     if type(input) != tuple:
         input = (input,)
     try:
         exec(contents.function)
-        correctAns=eval(contents.func_name)(*input)
+        correctAns = eval(contents.func_name)(*input)
         if correctAns == yourOutput:
             return jsonify(result="true")
         else:
             return jsonify(result="false")
     except Exception as e:
-
+        traceback.print_exc()
         return jsonify(result="Error")
 
 
 @ wally.route('/background_process_testOutputs')
 def background_process_testOutputs():
-    yourInput=eval(request.args.to_dict()['input'])
+    yourInput = eval(request.args.to_dict()['input'])
     if type(yourInput) != tuple:
         yourInput = (yourInput,)
-    output=eval(request.args.to_dict()['output'])
+    output = eval(request.args.to_dict()['output'])
 
     try:
         exec(contents.function)
 
-        yourAns=eval(contents.func_name)(*yourInput)
+        yourAns = eval(contents.func_name)(*yourInput)
         if yourAns == output:
             return jsonify(result="true")
         else:
@@ -289,12 +291,12 @@ def background_process_testOutputs():
 
 @ wally.route('/background_process_testCode')
 def background_process_testCode():
-    input=(eval(json.loads(request.args.to_dict()['input'])))
+    input = (eval(json.loads(request.args.to_dict()['input'])))
     if type(input) != tuple:
-        input=(input,)
-    output=eval(json.loads(request.args.to_dict()['output']))
-    code=request.args.to_dict()['code']
-    func_call=code[4:code.index("(")]
+        input = (input,)
+    output = eval(json.loads(request.args.to_dict()['output']))
+    code = request.args.to_dict()['code']
+    func_call = code[4:code.index("(")]
 
     try:
         exec(code)  # try just running the code
@@ -304,7 +306,7 @@ def background_process_testCode():
     try:
         # try running code w/ given input
         print(input)
-        calculatedAns=(eval(func_call))(*input)
+        calculatedAns = (eval(func_call))(*input)
     except Exception as e:
         traceback.print_exc()
         return jsonify(result="Error: " + str(e))
@@ -315,7 +317,7 @@ def background_process_testCode():
 
 @ wally.route('/background_process_checkFuncName')
 def background_process_checkFuncName():
-    func_name=request.args.to_dict()['func_name']
+    func_name = request.args.to_dict()['func_name']
     if Problem.query.get(func_name) == None:
         return jsonify(result="valid")
     else:
@@ -325,12 +327,13 @@ def background_process_checkFuncName():
 @ wally.route('/background_process_testBugs')
 def background_process_testBugs():
     global contents
-    input=json.loads(request.args.to_dict()['input'])
-
+    input = (eval(json.loads(request.args.to_dict()['input'])))
+    if type(input) != tuple:
+        input = (input,)
     exec(contents.buggy_function)
 
     try:
-        ans=eval("{}({})".format(contents.func_name, input))
+        ans = eval(contents.func_name)(*input)
         return jsonify(result=json.dumps(ans))
     except Exception as e:
         return jsonify(result="Error: " + str(e))

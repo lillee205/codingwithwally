@@ -69,11 +69,7 @@
 	</tr>
 	{%for i in range(testCaseInputs|length)%}
 	<tr>
-		{% if testCaseInputs[i] is string %}
-			<td>"{{testCaseInputs[i]}}"</td>
-		{% else %}
-			<td>{{testCaseInputs[i]}}</td>
-		{% endif %}
+		<td>{{testCaseInputs[i]}}</td>
 		<td class="output"></td>
 		<td>{{testCaseOutputs[i]}}</td>
 	</tr>

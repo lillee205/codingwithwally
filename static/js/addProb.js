@@ -17,7 +17,7 @@ var quill = new Quill("#editor", {
 $(function () {
     $('#myform').submit(function (e) {
         //pass in value for description to form. take off any whitespace at end.
-        var descVal = quill.root.innerHtml.trim()
+        var descVal = quill.root.innerHTML.trim()
         descVal = descVal.endsWith('<p><br></p>') ? descVal.slice(1,-11) : descVal
         $('#desc').val(quill.root.innerHTML.trim())
         //set value of hidden fields for wtforms
@@ -29,6 +29,8 @@ $(function () {
         })
 
         $('#testCaseInputs').val(JSON.stringify(testCaseInputList))
+        console.log("input cae")
+        console.log($('#testCaseInputs').val())
         $('#testCaseOutputs').val(JSON.stringify(testCaseOutputList))
         var testInputList = []
         $('.submittedInput').each(function (index) {
