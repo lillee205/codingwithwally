@@ -7,6 +7,7 @@
 		$('input#submitCode').bind('click', function() {
 		$.getJSON('/background_process_writeCode', {
 			code: ace.edit("jsEditor").getValue(),
+			currentPath: window.location.pathname.slice(6),
 		}, function(data) {
 			if (typeof data.result == "string" && data.result.startsWith("Error")){
 				$("#result").text(data.result)
@@ -16,10 +17,20 @@
 			}
 			else{
 				yourAnswers = data.result
-
+				if (data.isAllCorrect == true){
+					$("tr").each(function(index){
+						if (index != 0){
+							$(this).css("background-color", "#45ac63")
+						}
+					})
+				}
+				else{
+					$("tr").css("background-color", "transparent")
+				}
 				$( ".output" ).each(function (index){
-
-					$(this).text(JSON.stringify(yourAnswers[index]))
+					var x = yourAnswers[index]
+					yourAnswers[index] = (x == true || x == false) ? String(x).charAt(0).toUpperCase() + String(x).slice(1): JSON.stringify(x)
+					$(this).text(yourAnswers[index])
 				})
 				$("#result").text("")
 			}

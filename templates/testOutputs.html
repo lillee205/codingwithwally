@@ -10,6 +10,8 @@
 				$.getJSON('/background_process_testOutputs', {
 					output: rowEl[1].innerText,
 					input: $(this).children()[0].value,
+					currentPath: window.location.pathname.slice(6),
+
 				}, function(data){
 					res = data.result 
 					if (res == "true"){

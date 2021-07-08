@@ -9,3 +9,12 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def contents_required(contents):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if contents == "" or contents == None:
+                return redirect(url_for('wally.error'))
+            return f(*args, **kwargs)
+        return decorated_function 
+    return decorator
