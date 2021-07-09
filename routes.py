@@ -239,9 +239,8 @@ def background_process_writeCode():
         for input in contents.testCaseInputs:
             testAns += [eval(contents.func_name)(*input)]
 
-        if sorted(testAns) == sorted(contents.testCaseOutputs):
-            isAllCorrect = True
-        return jsonify(result=testAns, isAllCorrect = isAllCorrect)
+        isCorrect = [True if testAns[i] == contents.testCaseOutputs[i] else False for i in range(len(testAns))]
+        return jsonify(result=testAns, isAllCorrect = isCorrect)
     except Exception as e:
         return jsonify(result="Error: " + str(e))
 

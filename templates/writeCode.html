@@ -11,22 +11,24 @@
 		}, function(data) {
 			if (typeof data.result == "string" && data.result.startsWith("Error")){
 				$("#result").text(data.result)
+				$("tr").css("background-color", "transparent")
+
 				$( ".output" ).each(function (index){
 					$(this).text("")
 				})
 			}
 			else{
 				yourAnswers = data.result
-				if (data.isAllCorrect == true){
-					$("tr").each(function(index){
-						if (index != 0){
-							$(this).css("background-color", "#45ac63")
-						}
-					})
-				}
-				else{
-					$("tr").css("background-color", "transparent")
-				}
+				correctList = data.isAllCorrect
+				$("tr").each(function(index){
+					if (index != 0 && correctList[index] == true){
+						$(this).css("background-color", "#45ac63")
+					}
+					else if (index != 0){
+						$(this).css("background-color", "#c1402f")
+					}
+				})
+				
 				$( ".output" ).each(function (index){
 					var x = yourAnswers[index]
 					yourAnswers[index] = (x == true || x == false) ? String(x).charAt(0).toUpperCase() + String(x).slice(1): JSON.stringify(x)

@@ -133,7 +133,6 @@ h3 {
 
 
 p {
-    font-family: "Verdana", sans-serif;
     font-size: 0.9em;
 }
 
@@ -141,28 +140,20 @@ p {
     position: absolute;
     right: 8vh;
     font-size: 1em;
-    background-color: rgb(32, 32, 32);
-    border: rgb(46, 49, 41) solid 4px;
-    color: rgb(255, 181, 49);
-    padding: 1em 0.8em;
+    background-color: var(--darkGray);
+    color: var(--marigold);
+    padding: 1em 1em;
     border-radius: 5px;
-    font-family: "Verdana", sans-serif;
-    background-image: -webkit-linear-gradient(left, rgb(32, 32, 32), rgb(32, 32, 32) 5%, rgb(46, 49, 41) 5%, rgb(46, 49, 41) 10%, rgb(32, 32, 32) 10%, rgb(32, 32, 32) 15%, rgb(46, 49, 41) 15%, rgb(46, 49, 41) 20%, rgb(32, 32, 32) 20%, rgb(32, 32, 32) 25%, rgb(46, 49, 41) 25%, rgb(46, 49, 41) 30%, rgb(32, 32, 32) 30%, rgb(32, 32, 32) 35%, rgb(46, 49, 41) 35%, rgb(46, 49, 41) 40%, rgb(32, 32, 32) 40%, rgb(32, 32, 32) 45%, rgb(46, 49, 41) 45%, rgb(46, 49, 41) 50%, rgb(32, 32, 32) 50%, rgb(32, 32, 32) 55%, rgb(46, 49, 41) 55%, rgb(46, 49, 41) 60%, rgb(32, 32, 32) 60%, rgb(32, 32, 32) 65%, rgb(46, 49, 41) 65%, rgb(46, 49, 41) 70%, rgb(32, 32, 32) 70%, rgb(32, 32, 32) 75%, rgb(46, 49, 41) 75%, rgb(46, 49, 41) 80%, rgb(32, 32, 32) 80%, rgb(32, 32, 32) 85%, rgb(46, 49, 41) 85%, rgb(46, 49, 41) 90%, rgb(32, 32, 32) 90%, rgb(32, 32, 32) 95%, rgb(46, 49, 41) 95%, rgb(46, 49, 41) 100%);
-    background-image: linear-gradient(to right, rgb(32, 32, 32), rgb(32, 32, 32) 5%, rgb(46, 49, 41) 5%, rgb(46, 49, 41) 10%, rgb(32, 32, 32) 10%, rgb(32, 32, 32) 15%, rgb(46, 49, 41) 15%, rgb(46, 49, 41) 20%, rgb(32, 32, 32) 20%, rgb(32, 32, 32) 25%, rgb(46, 49, 41) 25%, rgb(46, 49, 41) 30%, rgb(32, 32, 32) 30%, rgb(32, 32, 32) 35%, rgb(46, 49, 41) 35%, rgb(46, 49, 41) 40%, rgb(32, 32, 32) 40%, rgb(32, 32, 32) 45%, rgb(46, 49, 41) 45%, rgb(46, 49, 41) 50%, rgb(32, 32, 32) 50%, rgb(32, 32, 32) 55%, rgb(46, 49, 41) 55%, rgb(46, 49, 41) 60%, rgb(32, 32, 32) 60%, rgb(32, 32, 32) 65%, rgb(46, 49, 41) 65%, rgb(46, 49, 41) 70%, rgb(32, 32, 32) 70%, rgb(32, 32, 32) 75%, rgb(46, 49, 41) 75%, rgb(46, 49, 41) 80%, rgb(32, 32, 32) 80%, rgb(32, 32, 32) 85%, rgb(46, 49, 41) 85%, rgb(46, 49, 41) 90%, rgb(32, 32, 32) 90%, rgb(32, 32, 32) 95%, rgb(46, 49, 41) 95%, rgb(46, 49, 41) 100%);
-    background-position: 0 0;
-    background-size: 100%;
-    -webkit-transition: background 300ms;
-    transition: background 300ms ease-in-out;
+    border: none;
+
 }
 
 .submitbtn:hover {
     cursor: pointer;
-    background-position: 100px;
 }
 
 h2 {
     margin: 0;
-    font-family: "Verdana", sans-serif;
     font-size: 20px;
 }
 input[type=text]{
