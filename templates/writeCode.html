@@ -21,7 +21,7 @@
 				yourAnswers = data.result
 				correctList = data.isAllCorrect
 				$("tr").each(function(index){
-					if (index != 0 && correctList[index] == true){
+					if (index != 0 && correctList[index - 1] == true){
 						$(this).css("background-color", "#45ac63")
 					}
 					else if (index != 0){

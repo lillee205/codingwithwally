@@ -232,13 +232,13 @@ def background_process_writeCode():
     loadPage(request.args.get('currentPath'))
     
     code = request.args.get('code')
-    isAllCorrect = False
     try:
         exec(code)
         testAns = []
+        i =0 
         for input in contents.testCaseInputs:
             testAns += [eval(contents.func_name)(*input)]
-
+            i+= 1
         isCorrect = [True if testAns[i] == contents.testCaseOutputs[i] else False for i in range(len(testAns))]
         return jsonify(result=testAns, isAllCorrect = isCorrect)
     except Exception as e:
