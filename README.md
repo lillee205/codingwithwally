@@ -28,5 +28,5 @@ The hope is that by having these three extra modes, students will not just jump 
   * Significant work with JSON to communicate between Javascript and Python
 * SQLAlchemy for database
 * WTForms for form validation
-
-
+* QuillJS for text editor
+* Ace for code editor
