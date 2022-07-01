@@ -3,6 +3,7 @@ A coding site akin to CodingBat specifically for Harvey Mudd's introductory CS c
 
 ## About
 [Link to Coding with Wally](http://codingwithwally-hmccsstudio.pythonanywhere.com/login) (note: requires HMC email. If you'd like to see the site, use username: wart@hmc.edu, password: 12345678)
+
 A HMC-themed (hence the gold and black) coding site designed for beginner coders to practice their Python skills. 
 
 A notable feature is that each coding problem is accompanied by several modes. The default is the one that most expect; students type in code into a embedded code editor and check it against test cases. However, this inflexibility can sometimes be detrimental to truly understanding what one is supposed to solve. Thus, we have added three more modes in order to remedy this:
